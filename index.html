@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Spaces | Rentals & Property Sales</title>
+    <meta name="description" content="Find houses, apartments, shops and commercial properties for rent or sale across Kenya.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">PRIME <span>SPACES</span></a>
+
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#properties">Explore Properties</a>
+                <a href="#locations">Locations</a>
+                <a href="landlord.html" class="list-button">List Your Property</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main>
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <span class="hero-tag">YOUR PROPERTY, YOUR CHOICE</span>
+
+            <h1>Find a Space<br>You’ll Love.</h1>
+
+            <p>
+                Discover beautiful homes, apartments and commercial
+                spaces for rent or sale across Kenya.
+            </p>
+
+            <div class="search-box">
+
+                <select id="listingType">
+                    <option value="Rent">For Rent</option>
+                    <option value="Sale">For Sale</option>
+                </select>
+
+                <input
+                    type="text"
+                    id="location"
+                    placeholder="Where do you want to live?"
+                >
+
+                <select id="houseType">
+                    <option value="">All Property Types</option>
+                    <option value="Bedsitter">Bedsitter</option>
+                    <option value="Studio">Studio</option>
+                    <option value="One Bedroom">One Bedroom</option>
+                    <option value="Two Bedroom">Two Bedroom</option>
+                    <option value="Three Bedroom">Three Bedroom</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="House">House</option>
+                    <option value="Shop">Shop</option>
+                    <option value="Office">Office Space</option>
+                    <option value="Commercial">Commercial Property</option>
+                </select>
+
+                <button onclick="searchHouses()">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROPERTY CATEGORIES -->
+    <section class="container categories">
+        <h2>Explore Property Categories</h2>
+        <p>Find the perfect space for your needs.</p>
+
+        <div class="category-grid">
+            <a href="#properties" class="category-card">
+                <span>🏠</span>
+                <h3>Houses</h3>
+                <p>Find your next home.</p>
+            </a>
+
+            <a href="#properties" class="category-card">
+                <span>🏢</span>
+                <h3>Apartments</h3>
+                <p>Modern living spaces.</p>
+            </a>
+
+            <a href="#properties" class="category-card">
+                <span>🏬</span>
+                <h3>Shops</h3>
+                <p>Spaces for businesses.</p>
+            </a>
+
+            <a href="#properties" class="category-card">
+                <span>🏙️</span>
+                <h3>Commercial</h3>
+                <p>Offices and business spaces.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- FEATURED PROPERTIES -->
+    <section class="container" id="properties">
+        <div class="section-heading">
+            <div>
+                <h2>Featured Properties</h2>
+                <p>Explore some property examples.</p>
+            </div>
+        </div>
+
+        <div class="properties">
+
+            <div class="property">
+                <img
+                    src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700"
+                    alt="Modern apartment interior"
+                >
+                <div class="property-info">
+                    <span class="property-tag">FOR RENT</span>
+                    <h3>Modern Bedsitter</h3>
+                    <p>📍 Kahawa Wendani</p>
+                    <p class="price">KSh 6,000 / month</p>
+                </div>
+            </div>
+
+            <div class="property">
+                <img
+                    src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=700"
+                    alt="Modern living room"
+                >
+                <div class="property-info">
+                    <span class="property-tag">FOR RENT</span>
+                    <h3>One Bedroom Apartment</h3>
+                    <p>📍 Kahawa Sukari</p>
+                    <p class="price">KSh 12,000 / month</p>
+                </div>
+            </div>
+
+            <div class="property">
+                <img
+                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=700"
+                    alt="Contemporary residential property"
+                >
+                <div class="property-info">
+                    <span class="property-tag">FOR SALE</span>
+                    <h3>Modern Residential Space</h3>
+                    <p>📍 Nairobi</p>
+                    <p class="price">Contact for price</p>
+                </div>
+            </div>
+
+        </div>
+        <p class="demo-note">
+            These are demonstration listings. Actual property listings
+            will be displayed when connected to the database.
+        </p>
+    </section>
+
+    <!-- LOCATIONS -->
+    <section class="container locations" id="locations">
+        <h2>Popular Locations</h2>
+        <p>Explore properties in popular areas.</p>
+
+        <div class="location-list">
+            <span>Kahawa Wendani</span>
+            <span>Kahawa Sukari</span>
+            <span>Kahawa West</span>
+            <span>Githurai</span>
+            <span>Roysambu</span>
+            <span>Zimmerman</span>
+            <span>Kasarani</span>
+            <span>Ruiru</span>
+            <span>Kilimani</span>
+            <span>South B</span>
+            <span>South C</span>
+            <span>Embakasi</span>
+        </div>
+    </section>
+
+    <!-- LANDLORD SECTION -->
+    <section class="landlord-section">
+        <h2>Have a Property to Rent or Sell?</h2>
+        <p>Reach people looking for their next home or business space.</p>
+        <a href="landlord.html">List Your Property</a>
+    </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <h2>PRIME SPACES</h2>
+        <p>Your space. Your choice. Your future.</p>
+        <p>Rentals | Property Sales | Commercial Spaces</p>
+        <p>© 2026 Prime Spaces. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>

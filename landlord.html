@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landlord Portal | Prime Spaces</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f3f6fb;
+    color: #17243a;
+    min-height: 100vh;
+}
+
+header {
+    background: #102b50;
+    color: white;
+    padding: 22px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #f4a62a;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 480px;
+    margin: 55px auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 32px;
+    border-radius: 14px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+}
+
+h1 {
+    font-size: 27px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #68758a;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: #edf1f7;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tabs button.active {
+    background: #102b50;
+    color: white;
+}
+
+label {
+    display: block;
+    margin: 15px 0 7px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d5dce6;
+    border-radius: 7px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #f4a62a;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 22px;
+    background: #f4a62a;
+    color: #102b50;
+    border: none;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #e99715;
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.message {
+    margin-top: 17px;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    color: #778397;
+    padding: 25px;
+    font-size: 13px;
+}
+
+@media(max-width: 500px) {
+    .container {
+        margin: 25px auto;
+    }
+
+    .card {
+        padding: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">PRIME <span>SPACES</span></div>
+    <a href="index.html">Back to Home</a>
+</header>
+
+<div class="container">
+    <div class="card">
+
+        <h1>Landlord Portal</h1>
+
+        <p class="subtitle">
+            Welcome to Prime Spaces. Create your account or log in
+            to access your landlord services.
+        </p>
+
+        <div class="tabs" id="tabs">
+            <button id="registerTab" class="active"
+                onclick="showForm('register')">
+                Create Account
+            </button>
+
+            <button id="loginTab"
+                onclick="showForm('login')">
+                Log In
+            </button>
+        </div>
+
+        <form id="registerForm">
+
+            <label>Full Name</label>
+            <input type="text" id="fullName"
+                placeholder="Enter your full name" required>
+
+            <label>Email Address</label>
+            <input type="email" id="registerEmail"
+                placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" id="registerPassword"
+                placeholder="At least 6 characters"
+                minlength="6" required>
+
+            <button class="submit-btn" type="submit">
+                Create Account
+            </button>
+        </form>
+
+        <form id="loginForm" class="hidden">
+
+            <label>Email Address</label>
+            <input type="email" id="loginEmail"
+                placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" id="loginPassword"
+                placeholder="Enter your password" required>
+
+            <button class="submit-btn" type="submit">
+                Log In
+            </button>
+        </form>
+
+        <div id="accountArea" class="hidden">
+            <h2>Welcome to Prime Spaces!</h2>
+
+            <p class="subtitle" id="userEmail"></p>
+
+            <p>
+                Your landlord account is connected.
+                Property management features will be added next.
+            </p>
+
+            <button class="submit-btn" id="logoutButton">
+                Log Out
+            </button>
+        </div>
+
+        <p class="message" id="message" aria-live="polite"></p>
+
+    </div>
+</div>
+
+<footer>
+    © 2026 Prime Spaces. Your property marketplace.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// SUPABASE CONFIGURATION
+
+const SUPABASE_URL =
+    'https://djncwfwrjdvpcjwwzsui.supabase.co';
+
+const SUPABASE_ANON_KEY =
+    'sb_publishable_4MqW4L4i0YSmEu5AsytG7A_LwK0RPGi';
+
+const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+// PAGE ELEMENTS
+
+const registerForm = document.getElementById('registerForm');
+const loginForm = document.getElementById('loginForm');
+const accountArea = document.getElementById('accountArea');
+const message = document.getElementById('message');
+const tabs = document.getElementById('tabs');
+
+// SWITCH BETWEEN REGISTRATION AND LOGIN
+
+function showForm(type) {
+
+    registerForm.classList.toggle(
+        'hidden',
+        type !== 'register'
+    );
+
+    loginForm.classList.toggle(
+        'hidden',
+        type !== 'login'
+    );
+
+    accountArea.classList.add('hidden');
+
+    tabs.classList.remove('hidden');
+
+    document.getElementById('registerTab')
+        .classList.toggle('active', type === 'register');
+
+    document.getElementById('loginTab')
+        .classList.toggle('active', type === 'login');
+
+    message.textContent = '';
+}
+
+// REGISTRATION
+
+registerForm.addEventListener('submit', async function(event) {
+
+    event.preventDefault();
+
+    const button = registerForm.querySelector('button');
+
+    button.disabled = true;
+    button.textContent = 'Creating account...';
+    message.textContent = '';
+
+    try {
+
+        const fullName =
+            document.getElementById('fullName').value.trim();
+
+        const email =
+            document.getElementById('registerEmail').value.trim();
+
+        const password =
+            document.getElementById('registerPassword').value;
+
+        const { data, error } = await client.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+                data: {
+                    full_name: fullName
+                }
+            }
+
+        });
+
+        if (error) throw error;
+
+        if (data.session) {
+
+            showAccount(data.user);
+
+        } else {
+
+            message.textContent =
+                'Account created! Please check your email for a verification link before logging in.';
+
+        }
+
+    } catch (error) {
+
+        message.textContent =
+            'Registration failed: ' + error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = 'Create Account';
+
+    }
+
+});
+
+// LOGIN
+
+loginForm.addEventListener('submit', async function(event) {
+
+    event.preventDefault();
+
+    const button = loginForm.querySelector('button');
+
+    button.disabled = true;
+    button.textContent = 'Logging in...';
+    message.textContent = '';
+
+    try {
+
+        const email =
+            document.getElementById('loginEmail').value.trim();
+
+        const password =
+            document.getElementById('loginPassword').value;
+
+        const { data, error } =
+            await client.auth.signInWithPassword({
+
+                email: email,
+                password: password
+
+            });
+
+        if (error) throw error;
+
+        showAccount(data.user);
+
+    } catch (error) {
+
+        message.textContent =
+            'Login failed: ' + error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = 'Log In';
+
+    }
+
+});
+
+// DISPLAY LOGGED-IN ACCOUNT
+
+function showAccount(user) {
+
+    registerForm.classList.add('hidden');
+    loginForm.classList.add('hidden');
+    tabs.classList.add('hidden');
+
+    accountArea.classList.remove('hidden');
+
+    document.getElementById('userEmail').textContent =
+        'Logged in as: ' + user.email;
+
+    message.textContent =
+        'You are successfully logged in!';
+
+}
+
+// LOGOUT
+
+document.getElementById('logoutButton')
+    .addEventListener('click', async function() {
+
+        const button = this;
+
+        button.disabled = true;
+
+        try {
+
+            const { error } = await client.auth.signOut();
+
+            if (error) throw error;
+
+            showForm('login');
+
+            message.textContent =
+                'You have logged out successfully.';
+
+        } catch (error) {
+
+            message.textContent =
+                'Logout failed: ' + error.message;
+
+        } finally {
+
+            button.disabled = false;
+
+        }
+
+    });
+
+// CHECK EXISTING LOGIN SESSION
+
+async function checkExistingSession() {
+
+    try {
+
+        const { data, error } =
+            await client.auth.getSession();
+
+        if (error) throw error;
+
+        if (data.session) {
+
+            showAccount(data.session.user);
+
+        }
+
+    } catch (error) {
+
+        message.textContent =
+            'Unable to check your login session. Please refresh the page.';
+
+        console.error(error);
+
+    }
+
+}
+
+checkExistingSession();
+
+</script>
+
+</body>
+</html>
