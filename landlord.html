@@ -3,172 +3,465 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Landlord Dashboard | Prime Spaces</title>
+<meta name="theme-color" content="#172554">
+<title>Property Owner Portal | THE PLUG</title>
 
 <style>
 :root {
-    --navy:#102b50;
-    --navy-light:#193e69;
-    --gold:#f4a62a;
-    --background:#f3f6fb;
-    --white:#fff;
-    --text:#17243a;
+    --navy:#172554;
+    --navy-light:#243b73;
+    --orange:#FF7139;
+    --amber:#FFC66B;
+    --ivory:#F7F5EF;
+    --white:#ffffff;
+    --text:#18243b;
     --muted:#718096;
-    --border:#e3e9f1;
+    --border:#e4e8ef;
     --green:#16865b;
     --red:#d94c4c;
+    --background:#f4f5f8;
 }
-* {margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-body {background:var(--background);color:var(--text);min-height:100vh;}
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body {
+    background:var(--background);
+    color:var(--text);
+    min-height:100vh;
+}
+
 button,input,select,textarea {font:inherit;}
 button {cursor:pointer;}
 .hidden {display:none!important;}
 
 header {
-    background:var(--navy);color:white;padding:17px 5%;
-    display:flex;justify-content:space-between;align-items:center;gap:15px;
+    background:var(--navy);
+    color:white;
+    padding:17px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
 }
-.logo {font-size:23px;font-weight:bold;}
-.logo span {color:var(--gold);}
-header a {color:white;text-decoration:none;font-size:14px;}
 
-.auth-container {max-width:470px;margin:55px auto;padding:20px;}
+.logo {
+    font-size:23px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.logo span {color:var(--orange);}
+
+header a {
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+}
+
+header a:hover {color:var(--amber);}
+
+.auth-container {
+    max-width:470px;
+    margin:55px auto;
+    padding:20px;
+}
+
 .auth-card {
-    background:white;padding:32px;border-radius:15px;
-    box-shadow:0 5px 25px rgba(0,0,0,.06);
+    background:white;
+    padding:32px;
+    border-radius:15px;
+    border:1px solid var(--border);
+    box-shadow:0 8px 30px rgba(23,37,84,.07);
 }
-.auth-card h1 {margin-bottom:10px;}
-.subtitle {color:var(--muted);line-height:1.6;margin-bottom:22px;}
-.tabs {display:flex;gap:10px;margin-bottom:22px;}
+
+.auth-card h1 {margin-bottom:10px;color:var(--navy);}
+
+.subtitle {
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:22px;
+}
+
+.tabs {
+    display:flex;
+    gap:10px;
+    margin-bottom:22px;
+}
+
 .tabs button {
-    flex:1;padding:13px;border:none;border-radius:7px;
-    background:#edf1f7;font-weight:bold;
+    flex:1;
+    padding:13px;
+    border:none;
+    border-radius:7px;
+    background:#edf0f6;
+    font-weight:bold;
+    color:var(--navy);
 }
-.tabs button.active {background:var(--navy);color:white;}
+
+.tabs button.active {
+    background:var(--navy);
+    color:white;
+}
 
 .field {margin-bottom:17px;}
-label {display:block;margin-bottom:8px;font-weight:bold;font-size:14px;}
+
+label {
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+    font-size:14px;
+}
+
 input,select,textarea {
-    width:100%;padding:13px;border:1px solid #d6deea;
-    border-radius:8px;background:white;outline:none;color:var(--text);
+    width:100%;
+    padding:13px;
+    border:1px solid #d6deea;
+    border-radius:8px;
+    background:white;
+    outline:none;
+    color:var(--text);
 }
-input:focus,select:focus,textarea:focus {border-color:var(--gold);}
+
+input:focus,select:focus,textarea:focus {
+    border-color:var(--orange);
+    box-shadow:0 0 0 3px rgba(255,113,57,.10);
+}
+
 textarea {min-height:110px;resize:vertical;}
+
 .primary-btn {
-    border:none;background:var(--gold);color:var(--navy);
-    padding:14px 20px;border-radius:8px;font-weight:bold;
+    border:none;
+    background:var(--orange);
+    color:var(--navy);
+    padding:14px 20px;
+    border-radius:8px;
+    font-weight:bold;
+    transition:.2s;
 }
-.primary-btn:hover {background:#e99a18;}
+
+.primary-btn:hover {background:var(--amber);}
+
 .primary-btn:disabled {opacity:.6;cursor:wait;}
+
 .full-btn {width:100%;}
-.message {margin-top:16px;font-size:14px;line-height:1.6;overflow-wrap:anywhere;}
+
+.text-btn {
+    background:none;
+    border:none;
+    color:var(--navy);
+    font-size:13px;
+    text-decoration:underline;
+    margin-top:12px;
+}
+
+.message {
+    margin-top:16px;
+    font-size:14px;
+    line-height:1.6;
+    overflow-wrap:anywhere;
+}
+
 .message.error {color:var(--red);}
 .message.success {color:var(--green);}
 
-.dashboard {display:flex;min-height:calc(100vh - 65px);}
+.dashboard {
+    display:flex;
+    min-height:calc(100vh - 65px);
+}
+
 .sidebar {
-    width:245px;background:var(--navy);color:white;
-    padding:25px 15px;flex-shrink:0;
+    width:245px;
+    background:var(--navy);
+    color:white;
+    padding:25px 15px;
+    flex-shrink:0;
 }
+
 .sidebar-heading {
-    font-size:12px;color:#a9bdd5;margin:15px 12px;
-    text-transform:uppercase;letter-spacing:1px;
+    font-size:11px;
+    color:#a9bdd5;
+    margin:15px 12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
 }
+
 .nav-btn {
-    display:block;width:100%;text-align:left;padding:14px;
-    margin-bottom:7px;border:none;border-radius:8px;
-    background:transparent;color:white;font-size:14px;
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:14px;
+    margin-bottom:7px;
+    border:none;
+    border-radius:8px;
+    background:transparent;
+    color:white;
+    font-size:14px;
 }
-.nav-btn:hover,.nav-btn.active {background:var(--navy-light);color:var(--gold);}
+
+.nav-btn:hover,.nav-btn.active {
+    background:var(--navy-light);
+    color:var(--amber);
+}
+
 .logout-nav {color:#ffaaaa;margin-top:25px;}
 
-.main-content {flex:1;padding:32px;min-width:0;}
+.main-content {
+    flex:1;
+    padding:32px;
+    min-width:0;
+}
+
 .topbar {
-    display:flex;justify-content:space-between;align-items:center;
-    gap:15px;margin-bottom:30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:30px;
 }
-.topbar h1 {font-size:26px;margin-bottom:6px;}
+
+.topbar h1 {
+    font-size:26px;
+    margin-bottom:6px;
+    color:var(--navy);
+}
+
 .topbar p {color:var(--muted);font-size:14px;}
+
 .user-pill {
-    background:white;padding:11px 16px;border-radius:25px;
-    border:1px solid var(--border);font-size:13px;overflow-wrap:anywhere;
+    background:white;
+    padding:11px 16px;
+    border-radius:25px;
+    border:1px solid var(--border);
+    font-size:13px;
+    overflow-wrap:anywhere;
 }
-.stats {display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:30px;}
-.stat-card {background:white;padding:22px;border-radius:12px;border:1px solid var(--border);}
+
+.stats {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:30px;
+}
+
+.stat-card {
+    background:white;
+    padding:22px;
+    border-radius:12px;
+    border:1px solid var(--border);
+}
+
 .stat-card .icon {font-size:25px;margin-bottom:13px;}
-.stat-card h2 {font-size:27px;margin-bottom:7px;}
+.stat-card h2 {font-size:27px;margin-bottom:7px;color:var(--navy);}
 .stat-card p {color:var(--muted);font-size:13px;}
 
 .section {display:none;}
 .section.active {display:block;}
-.panel {
-    background:white;border:1px solid var(--border);
-    border-radius:13px;padding:25px;margin-bottom:23px;
-}
-.panel-heading {margin-bottom:22px;}
-.panel-heading h2 {font-size:21px;margin-bottom:7px;}
-.panel-heading p {color:var(--muted);font-size:14px;line-height:1.5;}
-.form-grid {display:grid;grid-template-columns:1fr 1fr;gap:0 18px;}
-.full-width {grid-column:1/-1;}
-.form-note {font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5;}
 
-.upload-box {border:2px dashed #cbd6e5;background:#f8faff;border-radius:12px;padding:20px;}
+.panel {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:25px;
+    margin-bottom:23px;
+}
+
+.panel-heading {margin-bottom:22px;}
+.panel-heading h2 {font-size:21px;margin-bottom:7px;color:var(--navy);}
+.panel-heading p {color:var(--muted);font-size:14px;line-height:1.5;}
+
+.form-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 18px;
+}
+
+.full-width {grid-column:1/-1;}
+
+.form-note {
+    font-size:12px;
+    color:var(--muted);
+    margin-top:7px;
+    line-height:1.5;
+}
+
+.upload-box {
+    border:2px dashed #cbd6e5;
+    background:#f8faff;
+    border-radius:12px;
+    padding:20px;
+}
+
 .upload-heading {font-weight:bold;margin-bottom:8px;}
 .photo-count {font-size:13px;color:var(--navy);font-weight:bold;margin-top:12px;}
-.photo-preview-grid {
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
-    gap:12px;margin-top:15px;
-}
-.preview-item {position:relative;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:white;}
-.preview-item img {width:100%;height:105px;object-fit:cover;display:block;}
-.preview-remove {
-    position:absolute;top:5px;right:5px;width:27px;height:27px;
-    border:none;border-radius:50%;background:var(--red);color:white;font-size:17px;
-}
-.preview-label {padding:6px;font-size:11px;text-align:center;overflow-wrap:anywhere;}
 
-.property-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
-.property-card {background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.property-main-image {width:100%;height:190px;object-fit:cover;background:#edf1f7;display:block;}
-.gallery-thumbnails {display:flex;gap:7px;padding:9px;overflow-x:auto;background:#f8faff;}
-.gallery-thumb {
-    width:58px;height:48px;flex:0 0 58px;padding:0;
-    border:2px solid transparent;border-radius:6px;overflow:hidden;background:white;
+.photo-preview-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+    gap:12px;
+    margin-top:15px;
 }
-.gallery-thumb.active {border-color:var(--gold);}
+
+.preview-item {
+    position:relative;
+    border:1px solid var(--border);
+    border-radius:9px;
+    overflow:hidden;
+    background:white;
+}
+
+.preview-item img {
+    width:100%;
+    height:105px;
+    object-fit:cover;
+    display:block;
+}
+
+.preview-remove {
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:27px;
+    height:27px;
+    border:none;
+    border-radius:50%;
+    background:var(--red);
+    color:white;
+    font-size:17px;
+}
+
+.preview-label {
+    padding:6px;
+    font-size:11px;
+    text-align:center;
+    overflow-wrap:anywhere;
+}
+
+.property-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:20px;
+}
+
+.property-card {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.property-main-image {
+    width:100%;
+    height:190px;
+    object-fit:cover;
+    background:#edf1f7;
+    display:block;
+}
+
+.gallery-thumbnails {
+    display:flex;
+    gap:7px;
+    padding:9px;
+    overflow-x:auto;
+    background:#f8faff;
+}
+
+.gallery-thumb {
+    width:58px;
+    height:48px;
+    flex:0 0 58px;
+    padding:0;
+    border:2px solid transparent;
+    border-radius:6px;
+    overflow:hidden;
+    background:white;
+}
+
+.gallery-thumb.active {border-color:var(--orange);}
 .gallery-thumb img {width:100%;height:100%;object-fit:cover;}
+
 .property-info {padding:18px;}
-.property-info h3 {font-size:18px;margin:12px 0 8px;}
+.property-info h3 {font-size:18px;margin:12px 0 8px;color:var(--navy);}
 .property-info p {font-size:13px;color:var(--muted);margin-bottom:9px;line-height:1.5;overflow-wrap:anywhere;}
 .price {font-size:18px!important;font-weight:bold;color:var(--navy)!important;}
-.status {display:inline-block;padding:6px 10px;border-radius:20px;font-size:11px;font-weight:bold;}
+
+.status {
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+}
+
 .pending {background:#fff2d8;color:#a66b00;}
 .approved {background:#dcf5e9;color:#16865b;}
+
 .delete-btn {
-    border:1px solid #f0caca;color:var(--red);background:white;
-    padding:10px 14px;border-radius:7px;margin-top:8px;
+    border:1px solid #f0caca;
+    color:var(--red);
+    background:white;
+    padding:10px 14px;
+    border-radius:7px;
+    margin-top:8px;
 }
+
 .delete-btn:hover {background:#fff0f0;}
 
 .empty-state {
-    text-align:center;padding:45px 20px;color:var(--muted);
-    background:white;border:1px dashed #ccd5e2;border-radius:12px;
+    text-align:center;
+    padding:45px 20px;
+    color:var(--muted);
+    background:white;
+    border:1px dashed #ccd5e2;
+    border-radius:12px;
 }
+
 .empty-state .empty-icon {font-size:40px;margin-bottom:12px;}
 .empty-state h3 {color:var(--text);margin-bottom:10px;}
-.account-detail {padding:16px 0;border-bottom:1px solid var(--border);}
-.account-detail span {display:block;color:var(--muted);font-size:12px;margin-bottom:7px;}
-.account-detail strong {font-size:15px;overflow-wrap:anywhere;}
-footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
+
+.account-detail {
+    padding:16px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.account-detail span {
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.account-detail strong {
+    font-size:15px;
+    overflow-wrap:anywhere;
+}
+
+footer {
+    text-align:center;
+    padding:22px;
+    color:var(--muted);
+    font-size:12px;
+}
 
 @media(max-width:800px) {
     .dashboard {flex-direction:column;}
-    .sidebar {width:100%;padding:10px;display:flex;overflow-x:auto;gap:5px;}
+    .sidebar {
+        width:100%;
+        padding:10px;
+        display:flex;
+        overflow-x:auto;
+        gap:5px;
+    }
     .sidebar-heading {display:none;}
     .nav-btn {width:auto;white-space:nowrap;margin:0;padding:12px;}
     .logout-nav {margin-top:0;}
     .main-content {padding:22px 15px;}
 }
+
 @media(max-width:600px) {
     .stats {grid-template-columns:1fr;}
     .property-grid {grid-template-columns:1fr;}
@@ -185,14 +478,14 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
 <body>
 
 <header>
-    <div class="logo">PRIME <span>SPACES</span></div>
-    <a href="index.html">← Back to Home</a>
+    <div class="logo">THE <span>PLUG</span></div>
+    <a href="index.html">← Back to Marketplace</a>
 </header>
 
 <div id="authArea" class="auth-container">
     <div class="auth-card">
-        <h1>Landlord Portal</h1>
-        <p class="subtitle">Manage your properties and connect with potential tenants through Prime Spaces.</p>
+        <h1>Property Owner Portal</h1>
+        <p class="subtitle">List and manage your properties through THE PLUG. Connect with people looking for their next home or commercial space.</p>
 
         <div class="tabs">
             <button id="registerTab" class="active" type="button" onclick="showAuthForm('register')">Create Account</button>
@@ -201,72 +494,100 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
 
         <form id="registerForm">
             <div class="field">
-                <label>Full Name</label>
-                <input type="text" id="fullName" placeholder="Your full name" required>
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Your full name" required autocomplete="name">
             </div>
+
             <div class="field">
-                <label>Email Address</label>
-                <input type="email" id="registerEmail" placeholder="Your email address" required>
+                <label for="registerEmail">Email Address</label>
+                <input type="email" id="registerEmail" placeholder="Your email address" required autocomplete="email">
             </div>
+
             <div class="field">
-                <label>Password</label>
-                <input type="password" id="registerPassword" minlength="6" placeholder="At least 6 characters" required>
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" minlength="6" placeholder="At least 6 characters" required autocomplete="new-password">
             </div>
-            <button class="primary-btn full-btn" type="submit">Create Landlord Account</button>
+
+            <button class="primary-btn full-btn" type="submit">Create Property Owner Account</button>
         </form>
 
         <form id="loginForm" class="hidden">
             <div class="field">
-                <label>Email Address</label>
-                <input type="email" id="loginEmail" placeholder="Your email address" required>
+                <label for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" placeholder="Your email address" required autocomplete="email">
             </div>
+
             <div class="field">
-                <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="Your password" required>
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Your password" required autocomplete="current-password">
             </div>
+
             <button class="primary-btn full-btn" type="submit">Log In</button>
+            <button class="text-btn" type="button" onclick="resetPassword()">Forgot your password?</button>
         </form>
+
         <p id="authMessage" class="message" aria-live="polite"></p>
     </div>
 </div>
 
 <div id="dashboardArea" class="dashboard hidden">
+
     <aside class="sidebar">
         <div class="sidebar-heading">MAIN MENU</div>
-        <button class="nav-btn active" onclick="openSection('overview',this)">🏠 Dashboard</button>
-        <button class="nav-btn" onclick="openSection('addProperty',this)">➕ Add Property</button>
-        <button class="nav-btn" onclick="openSection('myProperties',this)">🏘️ My Properties</button>
-        <button class="nav-btn" onclick="openSection('account',this)">👤 My Account</button>
+
+        <button class="nav-btn active" type="button" onclick="openSection('overview',this)">Dashboard</button>
+        <button class="nav-btn" type="button" onclick="openSection('addProperty',this)">+ Add Property</button>
+        <button class="nav-btn" type="button" onclick="openSection('myProperties',this)">My Properties</button>
+        <button class="nav-btn" type="button" onclick="openSection('account',this)">My Account</button>
+
         <div class="sidebar-heading">ACCOUNT</div>
-        <button class="nav-btn logout-nav" onclick="logout()">↪ Log Out</button>
+        <button class="nav-btn logout-nav" type="button" onclick="logout()">Log Out</button>
     </aside>
 
     <main class="main-content">
+
         <div class="topbar">
             <div>
-                <h1 id="welcomeTitle">Welcome, Landlord!</h1>
+                <h1 id="welcomeTitle">Welcome!</h1>
                 <p>Manage your property listings from one place.</p>
             </div>
-            <div class="user-pill" id="userPill">Landlord Account</div>
+            <div class="user-pill" id="userPill">Property Owner Account</div>
         </div>
 
         <section id="overview" class="section active">
             <div class="stats">
-                <div class="stat-card"><div class="icon">🏠</div><h2 id="totalCount">0</h2><p>Total Properties</p></div>
-                <div class="stat-card"><div class="icon">✅</div><h2 id="approvedCount">0</h2><p>Approved Properties</p></div>
-                <div class="stat-card"><div class="icon">⏳</div><h2 id="pendingCount">0</h2><p>Pending Approval</p></div>
+                <div class="stat-card">
+                    <div class="icon">⌂</div>
+                    <h2 id="totalCount">0</h2>
+                    <p>Total Properties</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon">✓</div>
+                    <h2 id="approvedCount">0</h2>
+                    <p>Approved Properties</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon">◷</div>
+                    <h2 id="pendingCount">0</h2>
+                    <p>Pending Approval</p>
+                </div>
             </div>
 
             <div class="panel">
                 <div class="panel-heading">
-                    <h2>Welcome to Your Dashboard</h2>
+                    <h2>Welcome to THE PLUG</h2>
                     <p>Your property management centre is ready. Start by adding your first property.</p>
                 </div>
-                <button class="primary-btn" onclick="openSectionById('addProperty')">+ List a Property</button>
+                <button class="primary-btn" type="button" onclick="openSectionById('addProperty')">+ List a Property</button>
             </div>
 
             <div class="panel">
-                <div class="panel-heading"><h2>Recently Added Properties</h2><p>Your latest property submissions.</p></div>
+                <div class="panel-heading">
+                    <h2>Recently Added Properties</h2>
+                    <p>Your latest property submissions.</p>
+                </div>
                 <div id="recentProperties" class="property-grid"></div>
             </div>
         </section>
@@ -275,18 +596,19 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
             <div class="panel">
                 <div class="panel-heading">
                     <h2>List a New Property</h2>
-                    <p>Enter accurate property information. Your listing will be reviewed before appearing on the public marketplace.</p>
+                    <p>Enter accurate property information. Your listing will be reviewed before appearing on THE PLUG.</p>
                 </div>
 
                 <form id="propertyForm">
                     <div class="form-grid">
+
                         <div class="field full-width">
-                            <label>Property Title *</label>
+                            <label for="propertyTitle">Property Title *</label>
                             <input type="text" id="propertyTitle" maxlength="120" placeholder="e.g. Modern 2 Bedroom Apartment" required>
                         </div>
 
                         <div class="field">
-                            <label>Property Category *</label>
+                            <label for="propertyCategory">Property Category *</label>
                             <select id="propertyCategory" required>
                                 <option value="">Select Category</option>
                                 <option value="Residential">Residential</option>
@@ -295,7 +617,7 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
                         </div>
 
                         <div class="field">
-                            <label>Property Type *</label>
+                            <label for="houseType">Property Type *</label>
                             <select id="houseType" required>
                                 <option value="">Select Property Type</option>
                                 <option value="Bedsitter">Bedsitter</option>
@@ -313,7 +635,7 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
                         </div>
 
                         <div class="field">
-                            <label>Listing Purpose *</label>
+                            <label for="listingType">Listing Purpose *</label>
                             <select id="listingType" required>
                                 <option value="">Select Purpose</option>
                                 <option value="Rent">For Rent</option>
@@ -322,27 +644,28 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
                         </div>
 
                         <div class="field">
-                            <label>Bedrooms</label>
+                            <label for="bedrooms">Bedrooms</label>
                             <input type="number" id="bedrooms" min="0" max="100" placeholder="Number of bedrooms">
                         </div>
 
                         <div class="field" id="rentField">
-                            <label>Monthly Rent (KSh) *</label>
+                            <label for="rent">Monthly Rent (KSh) *</label>
                             <input type="number" id="rent" min="1" step="1" placeholder="e.g. 15000" required>
                         </div>
 
                         <div class="field hidden" id="saleField">
-                            <label>Selling Price (KSh) *</label>
+                            <label for="sellPrice">Selling Price (KSh) *</label>
                             <input type="number" id="sellPrice" min="1" step="1" placeholder="e.g. 8500000">
                         </div>
 
                         <div class="field full-width">
-                            <label>Property Location *</label>
+                            <label for="propertyLocation">Property Location *</label>
                             <input type="text" id="propertyLocation" maxlength="180" placeholder="e.g. Kahawa Wendani, Kiambu" required>
+                            <p class="form-note">You can provide a general location. Avoid including private access details.</p>
                         </div>
 
                         <div class="field full-width">
-                            <label>Property Photographs</label>
+                            <label for="propertyPhotos">Property Photographs</label>
                             <div class="upload-box">
                                 <p class="upload-heading">Add up to 5 property photographs</p>
                                 <input type="file" id="propertyPhotos" accept="image/jpeg,image/png,image/webp" multiple>
@@ -353,13 +676,13 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
                         </div>
 
                         <div class="field full-width">
-                            <label>WhatsApp Number *</label>
+                            <label for="whatsappNumber">WhatsApp Number *</label>
                             <input type="tel" id="whatsappNumber" placeholder="e.g. 254712345678" maxlength="20" required>
                             <p class="form-note">Use your country code, for example 254712345678 for Kenya.</p>
                         </div>
 
                         <div class="field full-width">
-                            <label>Property Description *</label>
+                            <label for="description">Property Description *</label>
                             <textarea id="description" maxlength="3000" placeholder="Describe the property, amenities, security, parking and other important details..." required></textarea>
                         </div>
                     </div>
@@ -372,34 +695,56 @@ footer {text-align:center;padding:22px;color:var(--muted);font-size:12px;}
 
         <section id="myProperties" class="section">
             <div class="panel">
-                <div class="panel-heading"><h2>My Properties</h2><p>View the properties you have submitted and monitor their approval status.</p></div>
+                <div class="panel-heading">
+                    <h2>My Properties</h2>
+                    <p>View your submitted properties and monitor their approval status.</p>
+                </div>
                 <div id="myPropertiesGrid" class="property-grid"></div>
             </div>
         </section>
 
         <section id="account" class="section">
             <div class="panel">
-                <div class="panel-heading"><h2>My Account</h2><p>Your landlord account information.</p></div>
-                <div class="account-detail"><span>Full Name</span><strong id="accountName">-</strong></div>
-                <div class="account-detail"><span>Email Address</span><strong id="accountEmail">-</strong></div>
-                <div class="account-detail"><span>Account Status</span><strong style="color:#16865b">Logged In</strong></div>
-                <button class="primary-btn" style="margin-top:22px" onclick="logout()">Log Out</button>
+                <div class="panel-heading">
+                    <h2>My Account</h2>
+                    <p>Your property owner account information.</p>
+                </div>
+
+                <div class="account-detail">
+                    <span>Full Name</span>
+                    <strong id="accountName">-</strong>
+                </div>
+
+                <div class="account-detail">
+                    <span>Email Address</span>
+                    <strong id="accountEmail">-</strong>
+                </div>
+
+                <div class="account-detail">
+                    <span>Account Status</span>
+                    <strong style="color:#16865b">Logged In</strong>
+                </div>
+
+                <button class="primary-btn" style="margin-top:22px" type="button" onclick="logout()">Log Out</button>
             </div>
         </section>
+
     </main>
 </div>
 
-<footer>© 2026 Prime Spaces. Your property marketplace.</footer>
+<footer>© 2026 THE PLUG. Find It. Connect. Get It Done.</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// ==========================================
+// =====================================================
 // 1. SUPABASE CONNECTION
-// ==========================================
+// =====================================================
 
 const SUPABASE_URL = 'https://djncwfwrjdvpcjwwzsui.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_4MqW4L4i0YSmEu5AsytG7A_LwK0RPGi';
+
+const SUPABASE_ANON_KEY =
+    'sb_publishable_4MqW4L4i0YSmEu5AsytG7A_LwK0RPGi';
 
 const client = window.supabase.createClient(
     SUPABASE_URL,
@@ -413,17 +758,28 @@ const client = window.supabase.createClient(
     }
 );
 
-// The code will try both names if the first bucket is not found.
-const STORAGE_BUCKETS = ['property-photos', 'Property Photos'];
+// Try the existing bucket alias and the original
+// bucket name without changing the user's storage.
+
+const STORAGE_BUCKETS = [
+    'property-photos',
+    'Property Photos'
+];
 
 const MAX_PHOTOS = 5;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+const ALLOWED_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+];
 
 let currentUser = null;
 let landlordProperties = [];
 let selectedPhotos = [];
 let activeStorageBucket = null;
+let authInitialized = false;
 
 function el(id) {
     return document.getElementById(id);
@@ -431,6 +787,8 @@ function el(id) {
 
 function setMessage(id, message, type = '') {
     const element = el(id);
+    if (!element) return;
+
     element.textContent = message;
     element.className = 'message ' + type;
 }
@@ -438,11 +796,13 @@ function setMessage(id, message, type = '') {
 function safeImageURL(value) {
     try {
         const url = new URL(String(value || ''));
+
         if (url.protocol === 'https:' || url.protocol === 'http:') {
             return url.href;
         }
     } catch (error) {}
-    return 'https://placehold.co/600x400?text=Prime+Spaces';
+
+    return 'https://placehold.co/600x400?text=THE+PLUG';
 }
 
 function getPhotoURLs(property) {
@@ -462,7 +822,9 @@ function getPhotoURLs(property) {
         urls = [property.photo_url];
     }
 
-    return urls.filter(url => typeof url === 'string' && url.trim());
+    return urls.filter(
+        url => typeof url === 'string' && url.trim()
+    );
 }
 
 function makeUniqueFileName(file) {
@@ -471,29 +833,34 @@ function makeUniqueFileName(file) {
         .replace(/[^a-zA-Z0-9._-]/g, '-')
         .slice(-100);
 
-    const uniqueId = window.crypto && window.crypto.randomUUID
-        ? window.crypto.randomUUID()
-        : Date.now() + '-' + Math.random().toString(36).slice(2);
+    const uniqueId =
+        window.crypto && window.crypto.randomUUID
+            ? window.crypto.randomUUID()
+            : Date.now() + '-' + Math.random().toString(36).slice(2);
 
     return uniqueId + '-' + cleanName;
 }
 
 function releasePhotoPreviews() {
-    selectedPhotos.forEach(item => URL.revokeObjectURL(item.previewURL));
+    selectedPhotos.forEach(item => {
+        URL.revokeObjectURL(item.previewURL);
+    });
 }
 
-// ==========================================
+// =====================================================
 // 2. PHOTO SELECTION AND PREVIEW
-// ==========================================
+// =====================================================
 
 function renderPhotoPreviews() {
     const container = el('photoPreview');
+
     container.replaceChildren();
 
     el('photoCount').textContent =
-        selectedPhotos.length + ' of ' + MAX_PHOTOS + ' photographs selected';
+        selectedPhotos.length + ' of ' +
+        MAX_PHOTOS + ' photographs selected';
 
-    selectedPhotos.forEach((item, index) => {
+    selectedPhotos.forEach(function(item, index) {
         const wrapper = document.createElement('div');
         wrapper.className = 'preview-item';
 
@@ -505,6 +872,8 @@ function renderPhotoPreviews() {
         remove.type = 'button';
         remove.className = 'preview-remove';
         remove.textContent = '×';
+        remove.setAttribute('aria-label', 'Remove photograph');
+
         remove.addEventListener('click', function() {
             URL.revokeObjectURL(item.previewURL);
             selectedPhotos.splice(index, 1);
@@ -525,17 +894,30 @@ el('propertyPhotos').addEventListener('change', function() {
 
     for (const file of files) {
         if (selectedPhotos.length >= MAX_PHOTOS) {
-            setMessage('propertyMessage', 'You can select a maximum of five photographs.', 'error');
+            setMessage(
+                'propertyMessage',
+                'You can select a maximum of five photographs.',
+                'error'
+            );
             break;
         }
 
         if (!ALLOWED_TYPES.includes(file.type)) {
-            setMessage('propertyMessage', 'Unsupported image: ' + file.name + '. Use JPG, PNG or WebP.', 'error');
+            setMessage(
+                'propertyMessage',
+                'Unsupported image: ' + file.name +
+                '. Use JPG, PNG or WebP.',
+                'error'
+            );
             continue;
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            setMessage('propertyMessage', file.name + ' is larger than 5 MB. Please choose a smaller image.', 'error');
+            setMessage(
+                'propertyMessage',
+                file.name + ' is larger than 5 MB.',
+                'error'
+            );
             continue;
         }
 
@@ -549,9 +931,9 @@ el('propertyPhotos').addEventListener('change', function() {
     this.value = '';
 });
 
-// ==========================================
-// 3. STORAGE BUCKET CHECK AND PHOTO UPLOAD
-// ==========================================
+// =====================================================
+// 3. STORAGE UPLOAD
+// =====================================================
 
 async function uploadOnePhoto(file) {
     const fileName = makeUniqueFileName(file);
@@ -580,7 +962,9 @@ async function uploadOnePhoto(file) {
                 .getPublicUrl(data.path);
 
             if (!publicData || !publicData.publicUrl) {
-                throw new Error('The photograph uploaded, but its public link could not be created.');
+                throw new Error(
+                    'The photo uploaded, but its public URL could not be created.'
+                );
             }
 
             return {
@@ -593,6 +977,7 @@ async function uploadOnePhoto(file) {
         lastError = error;
 
         const errorText = String(error.message || '').toLowerCase();
+
         const bucketMissing =
             errorText.includes('bucket not found') ||
             errorText.includes('not found');
@@ -602,7 +987,9 @@ async function uploadOnePhoto(file) {
         }
     }
 
-    throw lastError || new Error('The Storage bucket could not be found. Check its exact name in Supabase.');
+    throw lastError || new Error(
+        'The Storage bucket could not be found. Check its exact name in Supabase.'
+    );
 }
 
 async function uploadPropertyPhotos() {
@@ -615,6 +1002,7 @@ async function uploadPropertyPhotos() {
         }
 
         return uploaded;
+
     } catch (error) {
         await removeUploadedFiles(uploaded);
         throw error;
@@ -624,8 +1012,11 @@ async function uploadPropertyPhotos() {
 async function removeUploadedFiles(files) {
     const grouped = {};
 
-    files.forEach(file => {
-        if (!grouped[file.bucket]) grouped[file.bucket] = [];
+    files.forEach(function(file) {
+        if (!grouped[file.bucket]) {
+            grouped[file.bucket] = [];
+        }
+
         grouped[file.bucket].push(file.path);
     });
 
@@ -634,33 +1025,54 @@ async function removeUploadedFiles(files) {
             .from(bucketName)
             .remove(grouped[bucketName]);
 
-        if (error) console.error('Photo cleanup error:', error);
+        if (error) {
+            console.error('Photo cleanup error:', error);
+        }
     }
 }
 
-// ==========================================
+// =====================================================
 // 4. AUTHENTICATION TABS
-// ==========================================
+// =====================================================
 
 function showAuthForm(type) {
-    el('registerForm').classList.toggle('hidden', type !== 'register');
-    el('loginForm').classList.toggle('hidden', type !== 'login');
-    el('registerTab').classList.toggle('active', type === 'register');
-    el('loginTab').classList.toggle('active', type === 'login');
+    el('registerForm').classList.toggle(
+        'hidden',
+        type !== 'register'
+    );
+
+    el('loginForm').classList.toggle(
+        'hidden',
+        type !== 'login'
+    );
+
+    el('registerTab').classList.toggle(
+        'active',
+        type === 'register'
+    );
+
+    el('loginTab').classList.toggle(
+        'active',
+        type === 'login'
+    );
+
     setMessage('authMessage', '');
 }
+
 window.showAuthForm = showAuthForm;
 
-// ==========================================
+// =====================================================
 // 5. REGISTRATION
-// ==========================================
+// =====================================================
 
 el('registerForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const button = this.querySelector('button');
+
     button.disabled = true;
     button.textContent = 'Creating Account...';
+
     setMessage('authMessage', '');
 
     try {
@@ -672,7 +1084,9 @@ el('registerForm').addEventListener('submit', async function(event) {
             email,
             password,
             options: {
-                data: { full_name: fullName }
+                data: {
+                    full_name: fullName
+                }
             }
         });
 
@@ -683,29 +1097,38 @@ el('registerForm').addEventListener('submit', async function(event) {
         } else {
             setMessage(
                 'authMessage',
-                'Account created! Please check your email and click the verification link. You can then log in.',
+                'Account created! Check your email and click the verification link. You can then log in.',
                 'success'
             );
+
             showAuthForm('login');
         }
+
     } catch (error) {
-        setMessage('authMessage', 'Registration failed: ' + error.message, 'error');
+        setMessage(
+            'authMessage',
+            'Registration failed: ' + error.message,
+            'error'
+        );
+
     } finally {
         button.disabled = false;
-        button.textContent = 'Create Landlord Account';
+        button.textContent = 'Create Property Owner Account';
     }
 });
 
-// ==========================================
+// =====================================================
 // 6. LOGIN
-// ==========================================
+// =====================================================
 
 el('loginForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const button = this.querySelector('button');
+
     button.disabled = true;
     button.textContent = 'Logging In...';
+
     setMessage('authMessage', '');
 
     try {
@@ -720,17 +1143,69 @@ el('loginForm').addEventListener('submit', async function(event) {
         if (error) throw error;
 
         await activateDashboard(data.user);
+
     } catch (error) {
-        setMessage('authMessage', 'Login failed: ' + error.message, 'error');
+        setMessage(
+            'authMessage',
+            'Login failed: ' + error.message,
+            'error'
+        );
+
     } finally {
         button.disabled = false;
         button.textContent = 'Log In';
     }
 });
 
-// ==========================================
-// 7. ACTIVATE DASHBOARD
-// ==========================================
+// =====================================================
+// 7. PASSWORD RESET
+// =====================================================
+
+async function resetPassword() {
+    const email = el('loginEmail').value.trim();
+
+    if (!email) {
+        setMessage(
+            'authMessage',
+            'Enter your email address first, then select Forgot your password.',
+            'error'
+        );
+        return;
+    }
+
+    try {
+        const redirectTo = new URL(
+            'landlord.html',
+            window.location.href
+        ).href;
+
+        const { error } = await client.auth.resetPasswordForEmail(
+            email,
+            { redirectTo }
+        );
+
+        if (error) throw error;
+
+        setMessage(
+            'authMessage',
+            'If the email is registered, a password reset link will be sent. Check your inbox.',
+            'success'
+        );
+
+    } catch (error) {
+        setMessage(
+            'authMessage',
+            'Unable to request password reset: ' + error.message,
+            'error'
+        );
+    }
+}
+
+window.resetPassword = resetPassword;
+
+// =====================================================
+// 8. ACTIVATE DASHBOARD
+// =====================================================
 
 async function activateDashboard(user) {
     if (!user) return;
@@ -740,19 +1215,24 @@ async function activateDashboard(user) {
     el('authArea').classList.add('hidden');
     el('dashboardArea').classList.remove('hidden');
 
-    const fullName = user.user_metadata?.full_name || 'Landlord';
+    const fullName =
+        user.user_metadata?.full_name || 'Property Owner';
 
-    el('welcomeTitle').textContent = 'Welcome, ' + fullName + '!';
-    el('userPill').textContent = user.email || 'Landlord';
+    el('welcomeTitle').textContent =
+        'Welcome, ' + fullName + '!';
+
+    el('userPill').textContent =
+        user.email || 'Property Owner';
+
     el('accountName').textContent = fullName;
     el('accountEmail').textContent = user.email || '-';
 
     await loadLandlordProperties();
 }
 
-// ==========================================
-// 8. LOAD LANDLORD PROPERTIES
-// ==========================================
+// =====================================================
+// 9. LOAD LANDLORD PROPERTIES
+// =====================================================
 
 async function loadLandlordProperties() {
     if (!currentUser) return;
@@ -770,81 +1250,113 @@ async function loadLandlordProperties() {
         if (error) throw error;
 
         landlordProperties = data || [];
+
         updateStatistics();
         renderMyProperties();
+
     } catch (error) {
         console.error('Property loading error:', error);
-        el('recentProperties').textContent = 'Unable to load properties: ' + error.message;
-        el('myPropertiesGrid').textContent = 'Unable to load properties: ' + error.message;
+
+        el('recentProperties').textContent =
+            'Unable to load properties: ' + error.message;
+
+        el('myPropertiesGrid').textContent =
+            'Unable to load properties: ' + error.message;
     }
 }
 
-// ==========================================
-// 9. DASHBOARD STATISTICS
-// ==========================================
+// =====================================================
+// 10. DASHBOARD STATISTICS
+// =====================================================
 
 function updateStatistics() {
     const total = landlordProperties.length;
-    const approved = landlordProperties.filter(property => property.is_approved === true).length;
+
+    const approved = landlordProperties.filter(
+        property => property.is_approved === true
+    ).length;
 
     el('totalCount').textContent = total;
     el('approvedCount').textContent = approved;
     el('pendingCount').textContent = total - approved;
 }
 
-// ==========================================
-// 10. SAFE TEXT HELPER
-// ==========================================
+// =====================================================
+// 11. SAFE TEXT HELPER
+// =====================================================
 
 function addText(parent, tag, text, className = '') {
     const element = document.createElement(tag);
+
     element.textContent = text || '';
-    if (className) element.className = className;
+
+    if (className) {
+        element.className = className;
+    }
+
     parent.appendChild(element);
+
     return element;
 }
 
-// ==========================================
-// 11. PROPERTY PHOTO GALLERY
-// ==========================================
+// =====================================================
+// 12. PROPERTY PHOTO GALLERY
+// =====================================================
 
 function createPropertyGallery(property) {
     const gallery = document.createElement('div');
+
     let urls = getPhotoURLs(property).map(safeImageURL);
 
     if (!urls.length) {
-        urls = ['https://placehold.co/600x400?text=Prime+Spaces'];
+        urls = [
+            'https://placehold.co/600x400?text=THE+PLUG'
+        ];
     }
 
     const mainImage = document.createElement('img');
+
     mainImage.className = 'property-main-image';
     mainImage.src = urls[0];
     mainImage.alt = property.title || 'Property photograph';
     mainImage.loading = 'lazy';
+
     mainImage.onerror = function() {
         this.onerror = null;
-        this.src = 'https://placehold.co/600x400?text=Prime+Spaces';
+        this.src = 'https://placehold.co/600x400?text=THE+PLUG';
     };
+
     gallery.appendChild(mainImage);
 
     if (urls.length > 1) {
         const thumbnails = document.createElement('div');
+
         thumbnails.className = 'gallery-thumbnails';
 
-        urls.forEach((url, index) => {
+        urls.forEach(function(url, index) {
             const button = document.createElement('button');
+
             button.type = 'button';
-            button.className = 'gallery-thumb' + (index === 0 ? ' active' : '');
+
+            button.className =
+                'gallery-thumb' +
+                (index === 0 ? ' active' : '');
+
             button.title = 'View photo ' + (index + 1);
 
             const thumb = document.createElement('img');
+
             thumb.src = url;
             thumb.alt = 'Property photo ' + (index + 1);
+
             button.appendChild(thumb);
 
             button.addEventListener('click', function() {
                 mainImage.src = url;
-                thumbnails.querySelectorAll('.gallery-thumb').forEach(item => item.classList.remove('active'));
+
+                thumbnails.querySelectorAll('.gallery-thumb')
+                    .forEach(item => item.classList.remove('active'));
+
                 button.classList.add('active');
             });
 
@@ -857,54 +1369,108 @@ function createPropertyGallery(property) {
     return gallery;
 }
 
-// ==========================================
-// 12. PROPERTY CARD
-// ==========================================
+// =====================================================
+// 13. PROPERTY CARD
+// =====================================================
 
 function createPropertyCard(property) {
     const card = document.createElement('article');
+
     card.className = 'property-card';
+
     card.appendChild(createPropertyGallery(property));
 
     const info = document.createElement('div');
+
     info.className = 'property-info';
 
     const status = document.createElement('span');
-    status.className = property.is_approved === true ? 'status approved' : 'status pending';
-    status.textContent = property.is_approved === true ? 'APPROVED' : 'PENDING APPROVAL';
+
+    status.className =
+        property.is_approved === true
+            ? 'status approved'
+            : 'status pending';
+
+    status.textContent =
+        property.is_approved === true
+            ? 'APPROVED'
+            : 'PENDING APPROVAL';
+
     info.appendChild(status);
 
-    addText(info, 'h3', property.title || 'Untitled Property');
-    addText(info, 'p', '📍 ' + (property.location || 'Location unavailable'));
+    addText(
+        info,
+        'h3',
+        property.title || 'Untitled Property'
+    );
 
-    const isSale = String(property.listing_type || '').toLowerCase() === 'sale';
-    const price = Number(isSale ? property.sell_price : property.rent);
-    const priceText = price > 0
-        ? 'KSh ' + price.toLocaleString('en-KE') + (isSale ? '' : ' / month')
-        : 'Price not specified';
+    addText(
+        info,
+        'p',
+        'Location: ' + (property.location || 'Unavailable')
+    );
+
+    const listingType =
+        String(property.listing_type || '').toLowerCase();
+
+    const isSale = listingType === 'sale';
+
+    const rawPrice = isSale
+        ? (property.sale_price ?? property.sell_price)
+        : property.rent;
+
+    const price = Number(rawPrice);
+
+    const priceText =
+        Number.isFinite(price) && price > 0
+            ? 'KSh ' + price.toLocaleString('en-KE') +
+              (isSale ? '' : ' / month')
+            : 'Price not specified';
 
     addText(info, 'p', priceText, 'price');
-    addText(info, 'p', (property.property_category || 'Property') + ' • ' + (property.house_type || 'Property type'));
-    addText(info, 'p', property.description || 'No description');
 
-    if (property.is_approved !== true && String(property.owner_id) === String(currentUser.id)) {
+    addText(
+        info,
+        'p',
+        (property.property_category || 'Property') +
+        ' • ' +
+        (property.house_type || 'Property type')
+    );
+
+    addText(
+        info,
+        'p',
+        property.description || 'No description'
+    );
+
+    // Landlords may delete only their own pending listings.
+    // Approved listings remain protected in this portal.
+
+    if (
+        property.is_approved !== true &&
+        String(property.owner_id) === String(currentUser.id)
+    ) {
         const deleteButton = document.createElement('button');
+
         deleteButton.type = 'button';
         deleteButton.className = 'delete-btn';
-        deleteButton.textContent = 'Delete Listing';
+        deleteButton.textContent = 'Delete Pending Listing';
+
         deleteButton.addEventListener('click', function() {
             deleteProperty(property.id);
         });
+
         info.appendChild(deleteButton);
     }
 
     card.appendChild(info);
+
     return card;
 }
 
-// ==========================================
-// 13. DISPLAY PROPERTY LISTINGS
-// ==========================================
+// =====================================================
+// 14. DISPLAY PROPERTY LISTINGS
+// =====================================================
 
 function renderMyProperties() {
     const myGrid = el('myPropertiesGrid');
@@ -915,27 +1481,37 @@ function renderMyProperties() {
 
     if (landlordProperties.length === 0) {
         const empty = document.createElement('div');
+
         empty.className = 'empty-state';
         empty.style.gridColumn = '1 / -1';
 
-        addText(empty, 'div', '🏠', 'empty-icon');
+        addText(empty, 'div', '⌂', 'empty-icon');
         addText(empty, 'h3', 'No properties listed yet');
-        addText(empty, 'p', 'Start by adding your first property to Prime Spaces.');
+
+        addText(
+            empty,
+            'p',
+            'Start by adding your first property to THE PLUG.'
+        );
 
         myGrid.appendChild(empty);
         recentGrid.appendChild(empty.cloneNode(true));
+
         return;
     }
 
     landlordProperties.forEach(function(property, index) {
         myGrid.appendChild(createPropertyCard(property));
-        if (index < 4) recentGrid.appendChild(createPropertyCard(property));
+
+        if (index < 4) {
+            recentGrid.appendChild(createPropertyCard(property));
+        }
     });
 }
 
-// ==========================================
-// 14. LISTING PURPOSE SWITCH
-// ==========================================
+// =====================================================
+// 15. LISTING PURPOSE SWITCH
+// =====================================================
 
 el('listingType').addEventListener('change', function() {
     const isSale = this.value === 'Sale';
@@ -947,21 +1523,27 @@ el('listingType').addEventListener('change', function() {
     el('sellPrice').required = isSale;
 });
 
-// ==========================================
-// 15. SUBMIT PROPERTY
-// ==========================================
+// =====================================================
+// 16. SUBMIT PROPERTY
+// =====================================================
 
 el('propertyForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     if (!currentUser) {
-        setMessage('propertyMessage', 'Please log in before submitting a property.', 'error');
+        setMessage(
+            'propertyMessage',
+            'Please log in before submitting a property.',
+            'error'
+        );
         return;
     }
 
     const button = el('submitPropertyBtn');
+
     button.disabled = true;
     button.textContent = 'Preparing Property...';
+
     setMessage('propertyMessage', '');
 
     let uploadedFiles = [];
@@ -977,52 +1559,83 @@ el('propertyForm').addEventListener('submit', async function(event) {
         const cleanWhatsApp = whatsapp.replace(/\D/g, '');
 
         if (selectedPhotos.length > MAX_PHOTOS) {
-            throw new Error('You can upload a maximum of five photographs.');
+            throw new Error('Maximum five photographs allowed.');
         }
 
         const rent = el('rent').value;
-        const sellPrice = el('sellPrice').value;
+        const salePrice = el('sellPrice').value;
 
         const propertyData = {
             owner_id: currentUser.id,
+
             title: el('propertyTitle').value.trim(),
+
             location: el('propertyLocation').value.trim(),
+
             house_type: el('houseType').value,
-            bedrooms: el('bedrooms').value ? Number(el('bedrooms').value) : null,
+
+            bedrooms: el('bedrooms').value
+                ? Number(el('bedrooms').value)
+                : null,
+
             description: el('description').value.trim(),
+
             photo_url: null,
             photo_urls: [],
+
             whatsapp_number: cleanWhatsApp,
+
             is_approved: false,
+
             listing_type: listingType,
+
             property_category: el('propertyCategory').value,
-            rent: listingType === 'Rent' ? Number(rent) : null,
-            sell_price: listingType === 'Sale' ? Number(sellPrice) : null
+
+            rent: listingType === 'Rent'
+                ? Number(rent)
+                : null,
+
+            // Existing schema uses sale_price.
+            sale_price: listingType === 'Sale'
+                ? Number(salePrice)
+                : null
         };
 
-        if (listingType === 'Rent' && (!Number.isFinite(propertyData.rent) || propertyData.rent <= 0)) {
+        if (
+            listingType === 'Rent' &&
+            (!Number.isFinite(propertyData.rent) || propertyData.rent <= 0)
+        ) {
             throw new Error('Enter a valid monthly rent.');
         }
 
-        if (listingType === 'Sale' && (!Number.isFinite(propertyData.sell_price) || propertyData.sell_price <= 0)) {
+        if (
+            listingType === 'Sale' &&
+            (!Number.isFinite(propertyData.sale_price) || propertyData.sale_price <= 0)
+        ) {
             throw new Error('Enter a valid selling price.');
         }
 
-        if (!propertyData.title || !propertyData.location || !propertyData.description) {
+        if (
+            !propertyData.title ||
+            !propertyData.location ||
+            !propertyData.description
+        ) {
             throw new Error('Please complete all required property details.');
         }
 
-        // Upload photographs first, if the landlord selected any.
+        // Upload photos before inserting the property record.
+
         if (selectedPhotos.length > 0) {
             button.textContent = 'Uploading Photographs...';
+
             uploadedFiles = await uploadPropertyPhotos();
 
             const urls = uploadedFiles.map(file => file.url);
+
             propertyData.photo_urls = urls;
             propertyData.photo_url = urls[0] || null;
         }
 
-        // Save using the actual database column names.
         button.textContent = 'Saving Property...';
 
         const { error } = await client
@@ -1032,18 +1645,22 @@ el('propertyForm').addEventListener('submit', async function(event) {
         if (error) throw error;
 
         releasePhotoPreviews();
+
         selectedPhotos = [];
+
         renderPhotoPreviews();
 
         el('propertyForm').reset();
+
         el('rentField').classList.remove('hidden');
         el('saleField').classList.add('hidden');
+
         el('rent').required = true;
         el('sellPrice').required = false;
 
         setMessage(
             'propertyMessage',
-            'Success! Your property and photographs have been submitted. Your listing is awaiting administrator approval.',
+            'Success! Your property has been submitted and is awaiting administrator approval.',
             'success'
         );
 
@@ -1060,7 +1677,11 @@ el('propertyForm').addEventListener('submit', async function(event) {
             await removeUploadedFiles(uploadedFiles);
         }
 
-        setMessage('propertyMessage', 'Submission failed: ' + error.message, 'error');
+        setMessage(
+            'propertyMessage',
+            'Submission failed: ' + error.message,
+            'error'
+        );
 
     } finally {
         button.disabled = false;
@@ -1068,12 +1689,15 @@ el('propertyForm').addEventListener('submit', async function(event) {
     }
 });
 
-// ==========================================
-// 16. DELETE PENDING PROPERTY
-// ==========================================
+// =====================================================
+// 17. DELETE PENDING PROPERTY
+// =====================================================
 
 async function deleteProperty(propertyId) {
-    const property = landlordProperties.find(item => String(item.id) === String(propertyId));
+    const property = landlordProperties.find(
+        item => String(item.id) === String(propertyId)
+    );
+
     if (!property) return;
 
     if (property.is_approved === true) {
@@ -1081,7 +1705,16 @@ async function deleteProperty(propertyId) {
         return;
     }
 
-    if (!confirm('Are you sure you want to delete this pending property?')) return;
+    if (
+        String(property.owner_id) !== String(currentUser.id)
+    ) {
+        alert('You cannot delete another account’s property.');
+        return;
+    }
+
+    if (!confirm('Are you sure you want to delete this pending property?')) {
+        return;
+    }
 
     try {
         const { error } = await client
@@ -1094,62 +1727,91 @@ async function deleteProperty(propertyId) {
         if (error) throw error;
 
         alert('Property deleted successfully.');
+
         await loadLandlordProperties();
 
     } catch (error) {
         alert('Unable to delete property: ' + error.message);
     }
 }
+
 window.deleteProperty = deleteProperty;
 
-// ==========================================
-// 17. DASHBOARD NAVIGATION
-// ==========================================
+// =====================================================
+// 18. DASHBOARD NAVIGATION
+// =====================================================
 
 function openSection(sectionId, button) {
-    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-    el(sectionId).classList.add('active');
+    document.querySelectorAll('.section').forEach(function(section) {
+        section.classList.remove('active');
+    });
 
-    document.querySelectorAll('.nav-btn').forEach(nav => nav.classList.remove('active'));
-    if (button) button.classList.add('active');
+    const selectedSection = el(sectionId);
 
-    if (sectionId === 'myProperties') loadLandlordProperties();
+    if (!selectedSection) return;
 
-    window.scrollTo({top:0, behavior:'smooth'});
+    selectedSection.classList.add('active');
+
+    document.querySelectorAll('.nav-btn').forEach(function(nav) {
+        nav.classList.remove('active');
+    });
+
+    if (button) {
+        button.classList.add('active');
+    }
+
+    if (sectionId === 'myProperties') {
+        loadLandlordProperties();
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
 }
+
 window.openSection = openSection;
 
 function openSectionById(sectionId) {
     const buttons = document.querySelectorAll('.nav-btn');
+
     let selectedButton = null;
 
     buttons.forEach(function(button) {
-        if (button.getAttribute('onclick') && button.getAttribute('onclick').includes("'" + sectionId + "'")) {
+        if (
+            button.getAttribute('onclick') &&
+            button.getAttribute('onclick').includes("'" + sectionId + "'")
+        ) {
             selectedButton = button;
         }
     });
 
     openSection(sectionId, selectedButton);
 }
+
 window.openSectionById = openSectionById;
 
-// ==========================================
-// 18. LOGOUT
-// ==========================================
+// =====================================================
+// 19. LOGOUT
+// =====================================================
 
 async function logout() {
-    if (!confirm('Are you sure you want to log out?')) return;
+    if (!confirm('Are you sure you want to log out?')) {
+        return;
+    }
 
     try {
         const { error } = await client.auth.signOut();
+
         if (error) throw error;
 
         releasePhotoPreviews();
-        selectedPhotos = [];
-        renderPhotoPreviews();
 
-        currentUser = null;
+        selectedPhotos = [];
         landlordProperties = [];
+        currentUser = null;
+
+        renderPhotoPreviews();
 
         el('dashboardArea').classList.add('hidden');
         el('authArea').classList.remove('hidden');
@@ -1158,54 +1820,85 @@ async function logout() {
         el('registerForm').reset();
 
         showAuthForm('login');
-        setMessage('authMessage', 'You have logged out successfully.', 'success');
+
+        setMessage(
+            'authMessage',
+            'You have logged out successfully.',
+            'success'
+        );
 
     } catch (error) {
         alert('Logout failed: ' + error.message);
     }
 }
+
 window.logout = logout;
 
-// ==========================================
-// 19. CHECK EXISTING LOGIN SESSION
-// ==========================================
+// =====================================================
+// 20. CHECK EXISTING LOGIN SESSION
+// =====================================================
 
 async function checkExistingSession() {
     try {
         const { data, error } = await client.auth.getSession();
+
         if (error) throw error;
 
         if (data.session && data.session.user) {
             await activateDashboard(data.session.user);
         }
+
     } catch (error) {
         console.error('Session check failed:', error);
-        setMessage('authMessage', 'Unable to check your login session. Please refresh the page.', 'error');
+
+        setMessage(
+            'authMessage',
+            'Unable to check your login session. Please refresh the page.',
+            'error'
+        );
+    } finally {
+        authInitialized = true;
     }
 }
 
-// ==========================================
-// 20. AUTHENTICATION STATE CHANGES
-// ==========================================
+// =====================================================
+// 21. AUTHENTICATION STATE CHANGES
+// =====================================================
 
-client.auth.onAuthStateChange(function(event) {
+client.auth.onAuthStateChange(function(event, session) {
     if (event === 'SIGNED_OUT') {
         releasePhotoPreviews();
+
         selectedPhotos = [];
         landlordProperties = [];
         currentUser = null;
 
         el('dashboardArea').classList.add('hidden');
         el('authArea').classList.remove('hidden');
+
+        return;
+    }
+
+    // Avoid duplicate dashboard loading when the initial
+    // session is restored or a login event fires.
+
+    if (
+        (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') &&
+        session?.user &&
+        authInitialized &&
+        (!currentUser || currentUser.id !== session.user.id)
+    ) {
+        activateDashboard(session.user);
     }
 });
 
-// ==========================================
-// 21. START APPLICATION
-// ==========================================
+// =====================================================
+// 22. START APPLICATION
+// =====================================================
 
 checkExistingSession();
-console.log('Prime Spaces Landlord Dashboard Ready.');
+
+console.log('THE PLUG Property Owner Portal Ready.');
 
 </script>
 </body>
