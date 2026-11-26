@@ -6,6 +6,7 @@
 
     <title>Explore | THE PLUG</title>
     <meta name="description" content="Explore properties, products, services, rentals and taskers on THE PLUG Kenya. Find it, connect and get it done.">
+    <meta name="theme-color" content="#172554">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,6 +88,7 @@
             color: var(--navy);
             font-weight: 800;
             padding: 14px 25px;
+            cursor: pointer;
         }
 
         .market-search button:hover {
@@ -112,6 +114,8 @@
             border: 1px solid var(--border);
             border-radius: 14px;
             transition: .25s;
+            padding: 0;
+            font-family: inherit;
         }
 
         .market-category:hover {
@@ -187,6 +191,7 @@
             background: #0c1735;
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
+            scroll-margin-top: 25px;
         }
 
         .market-results-header {
@@ -269,6 +274,22 @@
             color: var(--amber);
             font-size: 11px;
             font-weight: 700;
+        }
+
+        .market-action-link {
+            display: inline-block;
+            margin-top: 24px;
+            padding: 13px 22px;
+            background: var(--orange);
+            color: var(--navy);
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .market-action-link:hover {
+            background: var(--amber);
         }
 
         .market-join-section {
@@ -431,7 +452,10 @@
                 THE <span>PLUG</span>
             </a>
 
-            <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+            <button class="menu-toggle"
+                    id="menu-toggle"
+                    aria-label="Open menu"
+                    aria-expanded="false">
                 ☰
             </button>
 
@@ -512,11 +536,10 @@
 
         <div class="market-categories" id="market-categories">
 
-            <button
-                type="button"
-                class="market-category active"
-                data-category="property"
-            >
+            <button type="button"
+                    class="market-category active"
+                    data-category="property"
+                    aria-pressed="true">
 
                 <div class="market-category-img property"></div>
 
@@ -531,11 +554,10 @@
             </button>
 
 
-            <button
-                type="button"
-                class="market-category"
-                data-category="buy-sell"
-            >
+            <button type="button"
+                    class="market-category"
+                    data-category="buy-sell"
+                    aria-pressed="false">
 
                 <div class="market-category-img products"></div>
 
@@ -550,11 +572,10 @@
             </button>
 
 
-            <button
-                type="button"
-                class="market-category"
-                data-category="services"
-            >
+            <button type="button"
+                    class="market-category"
+                    data-category="services"
+                    aria-pressed="false">
 
                 <div class="market-category-img services"></div>
 
@@ -569,11 +590,10 @@
             </button>
 
 
-            <button
-                type="button"
-                class="market-category"
-                data-category="hire"
-            >
+            <button type="button"
+                    class="market-category"
+                    data-category="hire"
+                    aria-pressed="false">
 
                 <div class="market-category-img hire"></div>
 
@@ -588,11 +608,10 @@
             </button>
 
 
-            <button
-                type="button"
-                class="market-category"
-                data-category="taskers"
-            >
+            <button type="button"
+                    class="market-category"
+                    data-category="taskers"
+                    aria-pressed="false">
 
                 <div class="market-category-img taskers"></div>
 
@@ -613,7 +632,7 @@
 
     <!-- MARKETPLACE RESULTS -->
 
-    <section class="market-results-section">
+    <section class="market-results-section" id="market-results-section">
 
         <div class="container">
 
@@ -660,22 +679,13 @@
 
                 <div class="market-empty">
 
-                    <div class="market-empty-icon">
-                        ⌕
-                    </div>
+                    <div class="market-empty-icon">⌕</div>
 
                     <h3>Welcome to THE PLUG</h3>
 
                     <p>
-                        We are bringing property, products, services,
-                        rentals and task opportunities together.
-                        Select a category above to begin exploring.
+                        Select a category above to explore the marketplace.
                     </p>
-
-                    <span class="market-empty-note">
-                        Marketplace listings will appear here as categories
-                        are connected to their databases.
-                    </span>
 
                 </div>
 
@@ -688,7 +698,7 @@
 
     <!-- JOIN THE PLUG -->
 
-    <section class="market-join-section">
+    <section class="market-join-section" id="market-join">
 
         <div class="container">
 
@@ -741,29 +751,382 @@
     </footer>
 
 
-    <!-- BASIC PAGE CONTROLS -->
+    <!-- MARKETPLACE FUNCTIONALITY -->
 
     <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
         const menuToggle = document.getElementById("menu-toggle");
         const mainNav = document.getElementById("main-nav");
 
-        menuToggle.addEventListener("click", function () {
-            mainNav.classList.toggle("menu-open");
+        const categoryCards = document.querySelectorAll(".market-category");
+
+        const resultsTitle = document.getElementById("market-results-title");
+        const resultsSubtitle = document.getElementById("market-results-subtitle");
+        const resultsContainer = document.getElementById("market-results");
+        const resultsSection = document.getElementById("market-results-section");
+
+        const searchInput = document.getElementById("market-search");
+        const searchButton = document.getElementById("market-search-btn");
+
+        const locationFilter = document.getElementById("market-location");
+        const subcategoryFilter = document.getElementById("market-subcategory");
+
+        let selectedCategory = "property";
+
+        const categories = {
+
+            property: {
+                title: "Explore Properties",
+                subtitle: "Discover houses, apartments, land and commercial spaces.",
+                message: "Find your next space.",
+                description: "Explore available rental and sale properties through our existing property listings.",
+                note: "Your property search is connected to the existing property section.",
+                options: ["Houses", "Apartments", "Bedsitters", "Single Rooms", "Land", "Commercial Spaces"],
+                link: "index.html#properties",
+                linkText: "View property listings"
+            },
+
+            "buy-sell": {
+                title: "Buy & Sell Products",
+                subtitle: "Discover products, deals and things worth owning.",
+                message: "Discover products.",
+                description: "Find new and pre-owned products and connect with people offering what you need.",
+                note: "Product listings will appear here when the Buy & Sell database is connected.",
+                options: ["Electronics", "Phones", "Fashion", "Home & Living", "Furniture", "Other Products"],
+                link: "#market-join",
+                linkText: "Become a seller"
+            },
+
+            services: {
+                title: "Professional Services",
+                subtitle: "Connect with businesses and skilled service providers.",
+                message: "Find the right person for the job.",
+                description: "Discover professionals including beauty specialists, technicians, designers, cleaners and other service providers.",
+                note: "Service provider profiles and enquiries will appear here once the services system is connected.",
+                options: ["Beauty & Personal Care", "Repairs", "Cleaning", "Design", "Professional Services", "Other Services"],
+                link: "#market-join",
+                linkText: "Become a service provider"
+            },
+
+            hire: {
+                title: "Items Available for Hire",
+                subtitle: "Find equipment, tools and useful items to hire.",
+                message: "Find what you need to hire.",
+                description: "Discover equipment, tools, electronics and other items available for short-term or long-term hire.",
+                note: "Hire listings will appear here when the hire system is connected.",
+                options: ["Tools", "Construction Equipment", "Electronics", "Event Equipment", "Vehicles", "Other Items"],
+                link: "#market-join",
+                linkText: "List an item for hire"
+            },
+
+            taskers: {
+                title: "Find Taskers",
+                subtitle: "Connect with people ready to help with everyday tasks.",
+                message: "Get things done.",
+                description: "Find people offering errands, deliveries, cleaning, moving and other everyday assistance.",
+                note: "Tasker profiles and task requests will appear here once the tasker system is connected.",
+                options: ["Errands", "Deliveries", "Cleaning", "Moving", "Shopping Assistance", "Other Tasks"],
+                link: "#market-join",
+                linkText: "Become a tasker"
+            }
+
+        };
+
+
+        function displayCategory(category, shouldScroll = true) {
+
+            const data = categories[category];
+
+            if (!data) return;
+
+            selectedCategory = category;
+
+            // Update selected category appearance.
+
+            categoryCards.forEach(function (card) {
+
+                const isActive = card.dataset.category === category;
+
+                card.classList.toggle("active", isActive);
+
+                card.setAttribute("aria-pressed", String(isActive));
+
+            });
+
+
+            // Update category heading and description.
+
+            resultsTitle.textContent = data.title;
+            resultsSubtitle.textContent = data.subtitle;
+
+
+            // Update category filter options.
+
+            subcategoryFilter.innerHTML = '<option value="">All categories</option>';
+
+            data.options.forEach(function (option) {
+
+                const item = document.createElement("option");
+
+                item.value = option.toLowerCase();
+                item.textContent = option;
+
+                subcategoryFilter.appendChild(item);
+
+            });
+
+
+            // Show category-specific content.
+
+            resultsContainer.innerHTML = `
+
+                <div class="market-empty">
+
+                    <div class="market-empty-icon">⌕</div>
+
+                    <h3>${data.message}</h3>
+
+                    <p>${data.description}</p>
+
+                    <span class="market-empty-note">
+                        ${data.note}
+                    </span>
+
+                    <div>
+                        <a href="${data.link}" class="market-action-link">
+                            ${data.linkText} →
+                        </a>
+                    </div>
+
+                </div>
+
+            `;
+
+
+            // Scroll to the selected category results.
+
+            if (shouldScroll) {
+
+                resultsSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
+        }
+
+
+        // CATEGORY CARD ACTIONS
+
+        categoryCards.forEach(function (card) {
+
+            card.addEventListener("click", function () {
+
+                displayCategory(card.dataset.category);
+
+            });
+
         });
 
-        document.querySelectorAll("#main-nav a").forEach(function (link) {
-            link.addEventListener("click", function () {
-                mainNav.classList.remove("menu-open");
-            });
+
+        // SEARCH FUNCTIONALITY
+
+        const keywords = {
+
+            property: [
+                "house", "houses", "apartment", "apartments",
+                "rent", "rental", "land", "property", "properties",
+                "bedsitter", "single room", "shop"
+            ],
+
+            "buy-sell": [
+                "buy", "sell", "product", "products", "phone",
+                "phones", "electronics", "clothes", "fashion",
+                "furniture", "shopping"
+            ],
+
+            services: [
+                "service", "services", "salon", "nails",
+                "beauty", "plumber", "electrician", "cleaning",
+                "designer", "barber", "makeup"
+            ],
+
+            hire: [
+                "hire", "equipment", "tools", "machines",
+                "event equipment", "camera", "generator"
+            ],
+
+            taskers: [
+                "task", "tasker", "tasks", "delivery",
+                "errands", "moving", "helper", "shopping assistance"
+            ]
+
+        };
+
+
+        function searchMarketplace() {
+
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (!query) {
+
+                displayCategory(selectedCategory);
+
+                return;
+
+            }
+
+            let matchedCategory = null;
+
+            for (const category in keywords) {
+
+                if (keywords[category].some(function (word) {
+
+                    return query.includes(word) || word.includes(query);
+
+                })) {
+
+                    matchedCategory = category;
+
+                    break;
+
+                }
+
+            }
+
+
+            if (matchedCategory) {
+
+                displayCategory(matchedCategory);
+
+            } else {
+
+                resultsTitle.textContent = "Search results";
+
+                resultsSubtitle.textContent = "You searched for: " + query;
+
+                resultsContainer.innerHTML = `
+
+                    <div class="market-empty">
+
+                        <div class="market-empty-icon">⌕</div>
+
+                        <h3>Let's find what you need.</h3>
+
+                        <p>
+                            We couldn't identify a matching category.
+                            Try searching for property, products, services,
+                            hire or tasks.
+                        </p>
+
+                        <span class="market-empty-note">
+                            More searchable listings will become available
+                            as the marketplace grows.
+                        </span>
+
+                    </div>
+
+                `;
+
+                resultsSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                );
+
+            }
+
+        }
+
+
+        searchButton.addEventListener("click", searchMarketplace);
+
+        searchInput.addEventListener("keydown", function (event) {
+
+            if (event.key === "Enter") {
+                searchMarketplace();
+            }
+
         });
+
+
+        // LOCATION AND SUBCATEGORY FILTER FEEDBACK
+
+        function updateFilterFeedback() {
+
+            const location = locationFilter.value;
+            const subcategory = subcategoryFilter.value;
+
+            if (!location && !subcategory) {
+                return;
+            }
+
+            const locationText = location
+                ? locationFilter.options[locationFilter.selectedIndex].text
+                : "All locations";
+
+            const categoryText = subcategory
+                ? subcategoryFilter.options[subcategoryFilter.selectedIndex].text
+                : "All categories";
+
+            resultsSubtitle.textContent =
+                categories[selectedCategory].subtitle +
+                " Selected filters: " +
+                locationText + " / " + categoryText + ".";
+
+        }
+
+
+        locationFilter.addEventListener("change", updateFilterFeedback);
+
+        subcategoryFilter.addEventListener("change", updateFilterFeedback);
+
+
+        // MOBILE NAVIGATION
+
+        if (menuToggle && mainNav) {
+
+            menuToggle.addEventListener("click", function () {
+
+                const isOpen = mainNav.classList.toggle("menu-open");
+
+                menuToggle.setAttribute("aria-expanded", String(isOpen));
+
+                menuToggle.textContent = isOpen ? "×" : "☰";
+
+            });
+
+
+            mainNav.querySelectorAll("a").forEach(function (link) {
+
+                link.addEventListener("click", function () {
+
+                    mainNav.classList.remove("menu-open");
+
+                    menuToggle.setAttribute("aria-expanded", "false");
+
+                    menuToggle.textContent = "☰";
+
+                });
+
+            });
+
+        }
+
+
+        // CURRENT YEAR
 
         document.getElementById("market-year").textContent =
             new Date().getFullYear();
 
-    </script>
 
-    <!-- Marketplace functionality will be connected in marketplace.js -->
+        // INITIAL CATEGORY
+
+        displayCategory("property", false);
+
+    });
+    </script>
 
 </body>
 </html>
