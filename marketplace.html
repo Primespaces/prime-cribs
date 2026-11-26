@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Explore | THE PLUG</title>
+    <meta name="description" content="Explore properties, products, services, rentals and taskers on THE PLUG Kenya. Find it, connect and get it done.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* MARKETPLACE PAGE */
+
+        .market-header-note {
+            padding: 10px 5%;
+            text-align: center;
+            background: var(--navy);
+            color: var(--amber);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .market-hero {
+            padding: 85px 5% 65px;
+            text-align: center;
+            background:
+                radial-gradient(ellipse at 80% 20%, rgba(255,113,57,.14), transparent 35%),
+                linear-gradient(135deg, #0b1532, #172554, #20345f);
+        }
+
+        .market-hero-inner {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .market-hero h1 {
+            font-family: Manrope, sans-serif;
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 900;
+            line-height: 1.12;
+            letter-spacing: -2px;
+        }
+
+        .market-hero h1 span {
+            color: var(--orange);
+        }
+
+        .market-hero p {
+            max-width: 650px;
+            margin: 20px auto;
+            color: #c4cede;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .market-search {
+            max-width: 780px;
+            margin: 30px auto 0;
+            display: flex;
+            gap: 10px;
+            padding: 9px;
+            background: var(--ivory);
+            border-radius: 13px;
+        }
+
+        .market-search input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            padding: 15px;
+            background: transparent;
+            color: var(--navy);
+        }
+
+        .market-search button {
+            border: none;
+            border-radius: 9px;
+            background: var(--orange);
+            color: var(--navy);
+            font-weight: 800;
+            padding: 14px 25px;
+        }
+
+        .market-search button:hover {
+            background: var(--amber);
+        }
+
+        .market-categories-section {
+            padding: 65px 0;
+        }
+
+        .market-categories {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .market-category {
+            text-align: left;
+            cursor: pointer;
+            overflow: hidden;
+            background: var(--navy-card);
+            color: var(--ivory);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: .25s;
+        }
+
+        .market-category:hover {
+            transform: translateY(-5px);
+            border-color: var(--orange);
+        }
+
+        .market-category.active {
+            border: 2px solid var(--orange);
+            box-shadow: 0 10px 30px rgba(255,113,57,.12);
+        }
+
+        .market-category-img {
+            height: 125px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .market-category-img::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent, rgba(11,21,50,.8));
+        }
+
+        .market-category-img.property {
+            background-image: url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80");
+        }
+
+        .market-category-img.products {
+            background-image: url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=600&q=80");
+        }
+
+        .market-category-img.services {
+            background-image: url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=600&q=80");
+        }
+
+        .market-category-img.hire {
+            background-image: url("https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=600&q=80");
+        }
+
+        .market-category-img.taskers {
+            background-image: url("https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=600&q=80");
+        }
+
+        .market-category-content {
+            padding: 17px;
+        }
+
+        .market-category-content small {
+            color: var(--amber);
+            font-weight: 800;
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        .market-category-content h3 {
+            font-family: Manrope, sans-serif;
+            font-size: 17px;
+            margin-top: 5px;
+        }
+
+        .market-category-content p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 7px;
+            line-height: 1.7;
+        }
+
+        .market-results-section {
+            padding: 70px 0;
+            background: #0c1735;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .market-results-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .market-results-header h2 {
+            font-family: Manrope, sans-serif;
+            font-size: clamp(25px, 4vw, 36px);
+        }
+
+        .market-results-header p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .market-filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .market-filter-row select {
+            flex: 1;
+            min-width: 180px;
+            padding: 13px;
+            background: var(--navy-card);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--ivory);
+            outline: none;
+        }
+
+        .market-empty {
+            padding: 50px 25px;
+            text-align: center;
+            border: 1px solid var(--border);
+            background: var(--navy-card);
+            border-radius: 16px;
+        }
+
+        .market-empty-icon {
+            width: 65px;
+            height: 65px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 20px;
+            border-radius: 18px;
+            background: rgba(255,113,57,.12);
+            color: var(--orange);
+            font-size: 28px;
+        }
+
+        .market-empty h3 {
+            font-family: Manrope, sans-serif;
+            font-size: 23px;
+        }
+
+        .market-empty p {
+            max-width: 550px;
+            margin: 12px auto;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .market-empty .market-empty-note {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 9px 13px;
+            border-radius: 8px;
+            background: rgba(255,198,107,.1);
+            color: var(--amber);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .market-join-section {
+            padding: 75px 0;
+            background: var(--ivory);
+            color: var(--navy);
+        }
+
+        .market-join-card {
+            padding: 40px;
+            border-radius: 20px;
+            background: var(--navy);
+            color: var(--ivory);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 35px;
+        }
+
+        .market-join-card h2 {
+            font-family: Manrope, sans-serif;
+            font-size: clamp(26px, 4vw, 38px);
+            line-height: 1.3;
+        }
+
+        .market-join-card p {
+            margin-top: 12px;
+            max-width: 600px;
+            color: var(--muted-light);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .market-join-card a {
+            flex-shrink: 0;
+            display: inline-block;
+            padding: 15px 22px;
+            background: var(--orange);
+            color: var(--navy);
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .market-join-card a:hover {
+            background: var(--amber);
+        }
+
+        .market-footer {
+            padding: 25px 5%;
+            text-align: center;
+            background: #09132e;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .market-footer a {
+            color: var(--amber);
+            text-decoration: none;
+        }
+
+        @media(max-width: 1000px) {
+            .market-categories {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media(max-width: 750px) {
+            .market-categories {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .market-join-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 30px;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .market-hero {
+                padding: 65px 5%;
+            }
+
+            .market-hero h1 {
+                letter-spacing: -1.5px;
+            }
+
+            .market-hero p {
+                font-size: 13px;
+            }
+
+            .market-search {
+                flex-direction: column;
+            }
+
+            .market-search input {
+                width: 100%;
+            }
+
+            .market-search button {
+                width: 100%;
+            }
+
+            .market-categories-section,
+            .market-results-section {
+                padding: 55px 0;
+            }
+
+            .market-category-img {
+                height: 115px;
+            }
+
+            .market-category-content {
+                padding: 13px;
+            }
+
+            .market-category-content h3 {
+                font-size: 15px;
+            }
+
+            .market-category-content p {
+                font-size: 10px;
+            }
+
+            .market-filter-row {
+                flex-direction: column;
+            }
+
+            .market-filter-row select {
+                width: 100%;
+            }
+
+            .market-join-section {
+                padding: 55px 0;
+            }
+        }
+
+        @media(max-width: 360px) {
+            .market-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .market-category-img {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="main-header">
+        <div class="nav-container">
+
+            <a href="index.html" class="logo">
+                THE <span>PLUG</span>
+            </a>
+
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+                ☰
+            </button>
+
+            <nav id="main-nav">
+                <a href="index.html">Home</a>
+                <a href="marketplace.html">Explore</a>
+                <a href="index.html#properties">Properties</a>
+                <a href="index.html#grow">Partner with us</a>
+                <a href="index.html#contact">Contact</a>
+                <a href="landlord.html" class="nav-cta">List with us</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- MARKETPLACE HERO -->
+
+    <section class="market-hero">
+
+        <div class="market-hero-inner">
+
+            <div class="hero-tag">
+                THE PLUG MARKETPLACE
+            </div>
+
+            <h1>
+                Everything you need.<br>
+                <span>All in one place.</span>
+            </h1>
+
+            <p>
+                Discover places to live, things to buy, services to
+                access, items to hire and people ready to get things done.
+                Your connection starts here.
+            </p>
+
+            <div class="market-search">
+
+                <input
+                    type="search"
+                    id="market-search"
+                    placeholder="What are you looking for?"
+                    aria-label="Search marketplace"
+                >
+
+                <button id="market-search-btn" type="button">
+                    Explore
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORIES -->
+
+    <section class="market-categories-section container">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    EXPLORE THE PLATFORM
+                </span>
+
+                <h2>Find your next connection</h2>
+
+                <p>
+                    Choose what you are looking for and explore THE PLUG.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="market-categories" id="market-categories">
+
+            <button
+                type="button"
+                class="market-category active"
+                data-category="property"
+            >
+
+                <div class="market-category-img property"></div>
+
+                <div class="market-category-content">
+                    <small>01 / PROPERTY</small>
+                    <h3>Properties</h3>
+                    <p>
+                        Discover houses, apartments, land and commercial spaces.
+                    </p>
+                </div>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="market-category"
+                data-category="buy-sell"
+            >
+
+                <div class="market-category-img products"></div>
+
+                <div class="market-category-content">
+                    <small>02 / MARKETPLACE</small>
+                    <h3>Buy & Sell</h3>
+                    <p>
+                        Discover products, deals and things worth owning.
+                    </p>
+                </div>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="market-category"
+                data-category="services"
+            >
+
+                <div class="market-category-img services"></div>
+
+                <div class="market-category-content">
+                    <small>03 / SERVICES</small>
+                    <h3>Services</h3>
+                    <p>
+                        Connect with businesses and skilled service providers.
+                    </p>
+                </div>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="market-category"
+                data-category="hire"
+            >
+
+                <div class="market-category-img hire"></div>
+
+                <div class="market-category-content">
+                    <small>04 / HIRE</small>
+                    <h3>Hire</h3>
+                    <p>
+                        Find equipment, tools and items available for hire.
+                    </p>
+                </div>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="market-category"
+                data-category="taskers"
+            >
+
+                <div class="market-category-img taskers"></div>
+
+                <div class="market-category-content">
+                    <small>05 / TASKS</small>
+                    <h3>Taskers</h3>
+                    <p>
+                        Find people ready to help with everyday tasks.
+                    </p>
+                </div>
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- MARKETPLACE RESULTS -->
+
+    <section class="market-results-section">
+
+        <div class="container">
+
+            <div class="market-results-header">
+
+                <div>
+                    <span class="section-eyebrow">
+                        MARKETPLACE DISCOVERY
+                    </span>
+
+                    <h2 id="market-results-title">
+                        Explore Properties
+                    </h2>
+
+                    <p id="market-results-subtitle">
+                        Discover available spaces and property listings.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="market-filter-row">
+
+                <select id="market-location" aria-label="Filter by location">
+                    <option value="">All locations</option>
+                    <option value="nairobi">Nairobi</option>
+                    <option value="kiambu">Kiambu</option>
+                    <option value="ruiru">Ruiru</option>
+                    <option value="kahawa">Kahawa</option>
+                    <option value="thika">Thika</option>
+                    <option value="meru">Meru</option>
+                    <option value="other">Other locations</option>
+                </select>
+
+                <select id="market-subcategory" aria-label="Filter category">
+                    <option value="">All categories</option>
+                </select>
+
+            </div>
+
+
+            <div id="market-results">
+
+                <div class="market-empty">
+
+                    <div class="market-empty-icon">
+                        ⌕
+                    </div>
+
+                    <h3>Welcome to THE PLUG</h3>
+
+                    <p>
+                        We are bringing property, products, services,
+                        rentals and task opportunities together.
+                        Select a category above to begin exploring.
+                    </p>
+
+                    <span class="market-empty-note">
+                        Marketplace listings will appear here as categories
+                        are connected to their databases.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- JOIN THE PLUG -->
+
+    <section class="market-join-section">
+
+        <div class="container">
+
+            <div class="market-join-card">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        GROW WITH THE PLUG
+                    </span>
+
+                    <h2>
+                        Have something to offer?
+                    </h2>
+
+                    <p>
+                        Whether you have a property, products, a business,
+                        equipment or skills, THE PLUG is designed to help
+                        connect what you offer with people who need it.
+                    </p>
+
+                </div>
+
+                <a href="landlord.html">
+                    Join THE PLUG &nbsp; →
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="market-footer">
+
+        <p>
+            <a href="index.html">THE PLUG</a>
+            &nbsp; | &nbsp;
+            Find It. Connect. Get It Done.
+        </p>
+
+        <p style="margin-top:10px;">
+            &copy; <span id="market-year"></span>
+            THE PLUG. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- BASIC PAGE CONTROLS -->
+
+    <script>
+
+        const menuToggle = document.getElementById("menu-toggle");
+        const mainNav = document.getElementById("main-nav");
+
+        menuToggle.addEventListener("click", function () {
+            mainNav.classList.toggle("menu-open");
+        });
+
+        document.querySelectorAll("#main-nav a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                mainNav.classList.remove("menu-open");
+            });
+        });
+
+        document.getElementById("market-year").textContent =
+            new Date().getFullYear();
+
+    </script>
+
+    <!-- Marketplace functionality will be connected in marketplace.js -->
+
+</body>
+</html>
