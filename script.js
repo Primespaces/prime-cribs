@@ -1,27 +1,31 @@
 /**
- * ==========================================
- * PRIME SPACES
+ * =====================================================
+ * THE PLUG
  * MAIN FRONTEND APPLICATION
- * ==========================================
+ * =====================================================
  *
- * Connected to the live Supabase database.
- * Displays approved landlord properties only.
+ * Existing property system preserved.
  *
- * Features:
- * - Live property listings
- * - Multiple landlord photos
- * - Rent and sale listings
- * - Location and property type search
- * - Bedrooms and property details
+ * Supports:
+ * - Supabase connection
+ * - Approved property listings
+ * - Rent and Sale
+ * - General property search
+ * - Property filters
  * - Sorting
+ * - Property photos
  * - Favourites
  * - WhatsApp contact
- * - Empty and error messages
+ * - Marketplace category navigation
+ *
+ * IMPORTANT:
+ * This file does not create, delete or reset
+ * any database tables or records.
  */
 
-// ==========================================
+// =====================================================
 // 1. SUPABASE CONFIGURATION
-// ==========================================
+// =====================================================
 
 const SUPABASE_URL =
     'https://djncwfwrjdvpcjwwzsui.supabase.co';
@@ -37,17 +41,18 @@ if (window.supabase) {
         SUPABASE_ANON_KEY
     );
 } else {
-    console.error('Supabase library was not loaded.');
+    console.error('THE PLUG: Supabase library was not loaded.');
 }
 
-// ==========================================
+// =====================================================
 // 2. APPLICATION STATE
-// ==========================================
+// =====================================================
 
 const state = {
     properties: [],
     filteredProperties: [],
     favourites: [],
+
     currentSort: 'newest',
     loading: false,
 
@@ -55,26 +60,36 @@ const state = {
         listingType: 'Rent',
         location: '',
         houseType: ''
-    }
+    },
+
+    marketplaceCategory: 'All',
+    marketplaceSearch: ''
 };
 
-// Load saved favourites
+// =====================================================
+// 3. LOAD EXISTING FAVOURITES
+// =====================================================
+
+// Keep the original storage key so existing saved
+// favourites are not lost during the rebrand.
 
 try {
-    state.favourites = JSON.parse(
+    const savedFavourites = JSON.parse(
         localStorage.getItem('prime_cribs_favourites') || '[]'
     );
 
-    if (!Array.isArray(state.favourites)) {
-        state.favourites = [];
-    }
+    state.favourites = Array.isArray(savedFavourites)
+        ? savedFavourites.map(String)
+        : [];
+
 } catch (error) {
+    console.error('Unable to load saved favourites:', error);
     state.favourites = [];
 }
 
-// ==========================================
-// 3. PAGE ELEMENTS
-// ==========================================
+// =====================================================
+// 4. PAGE ELEMENTS
+// =====================================================
 
 function getElements() {
     return {
@@ -86,43 +101,59 @@ function getElements() {
         propertySection: document.getElementById('properties'),
 
         favouritesGrid: document.getElementById('favourites-grid'),
-        sortSelect: document.getElementById('sort-select')
+        sortSelect: document.getElementById('sort-select'),
+
+        marketplaceGrid: document.getElementById('marketplace-grid'),
+        marketplaceSubtitle: document.getElementById('marketplace-subtitle'),
+
+        plugSearch: document.getElementById('plug-search'),
+        plugSearchBtn: document.getElementById('plug-search-btn')
     };
 }
 
-// ==========================================
-// 4. START APPLICATION
-// ==========================================
+// =====================================================
+// 5. INITIALIZE APPLICATION
+// =====================================================
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Prime Spaces initialized.');
+    console.log('THE PLUG application initialized.');
 
     setupSearchListeners();
+    setupMarketplaceListeners();
+
     fetchApprovedProperties();
 });
 
-// ==========================================
-// 5. SEARCH LISTENERS
-// ==========================================
+// =====================================================
+// 6. PROPERTY SEARCH LISTENERS
+// =====================================================
 
 function setupSearchListeners() {
     const el = getElements();
 
     if (el.listingType) {
-        el.listingType.addEventListener('change', searchHouses);
+        el.listingType.addEventListener('change', function () {
+            state.marketplaceSearch = '';
+            applyFiltersAndSort();
+        });
     }
 
     if (el.location) {
         el.location.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
+
+                state.marketplaceSearch = '';
                 searchHouses();
             }
         });
     }
 
     if (el.houseType) {
-        el.houseType.addEventListener('change', searchHouses);
+        el.houseType.addEventListener('change', function () {
+            state.marketplaceSearch = '';
+            applyFiltersAndSort();
+        });
     }
 
     if (el.sortSelect) {
@@ -133,15 +164,230 @@ function setupSearchListeners() {
     }
 }
 
-// ==========================================
-// 6. FETCH APPROVED PROPERTIES FROM SUPABASE
-// ==========================================
+// =====================================================
+// 7. MARKETPLACE LISTENERS
+// =====================================================
+
+function setupMarketplaceListeners() {
+    const el = getElements();
+
+    if (el.plugSearchBtn) {
+        el.plugSearchBtn.addEventListener(
+            'click',
+            performMarketplaceSearch
+        );
+    }
+
+    if (el.plugSearch) {
+        el.plugSearch.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                performMarketplaceSearch();
+            }
+        });
+    }
+
+    document.querySelectorAll('.plug-category').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const category = button.dataset.category || 'All';
+
+            setMarketplaceCategory(category);
+
+            const el = getElements();
+
+            if (el.marketplaceGrid) {
+                el.marketplaceGrid.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+
+            // Property category can use the existing
+            // property database immediately.
+
+            if (category === 'property') {
+                if (el.propertySection) {
+                    el.propertySection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
+}
+
+// =====================================================
+// 8. MARKETPLACE CATEGORY NAVIGATION
+// =====================================================
+
+function setMarketplaceCategory(category) {
+    state.marketplaceCategory = category;
+
+    const el = getElements();
+
+    const categoryNames = {
+        'All': 'Discover products, services, properties and opportunities.',
+        'property': 'Explore available rental and sale properties.',
+        'buy-sell': 'Buy and sell new and pre-owned items on THE PLUG.',
+        'services': 'Discover trusted service providers.',
+        'hire': 'Explore equipment, tools and other items available for hire.',
+        'taskers': 'Connect with people ready to get tasks done.'
+    };
+
+    if (el.marketplaceSubtitle) {
+        el.marketplaceSubtitle.textContent =
+            categoryNames[category] ||
+            'Discover more opportunities on THE PLUG.';
+    }
+
+    // IMPORTANT:
+    // Do not replace marketplaceGrid.innerHTML here.
+    // The homepage discovery cards must remain visible.
+}
+
+// =====================================================
+// 9. GENERAL MARKETPLACE SEARCH
+// =====================================================
+
+function performMarketplaceSearch() {
+    const el = getElements();
+
+    const query = el.plugSearch
+        ? el.plugSearch.value.trim()
+        : '';
+
+    if (!query) {
+        state.marketplaceSearch = '';
+
+        applyFiltersAndSort();
+
+        if (el.marketplaceSubtitle) {
+            el.marketplaceSubtitle.textContent =
+                'Discover products, services, properties and opportunities.';
+        }
+
+        showToast('Enter something to search for.');
+
+        return;
+    }
+
+    state.marketplaceSearch = query;
+
+    if (state.loading) {
+        showToast('Please wait while listings load.');
+        return;
+    }
+
+    // Search the existing property database.
+    // The other marketplace categories will be
+    // connected in a later development phase.
+
+    const normalizedQuery = normalize(query);
+
+    const matchingProperties = state.properties.filter(function (property) {
+        const searchableText = normalize([
+            property.title,
+            property.location,
+            property.house_type,
+            property.property_category,
+            property.description,
+            property.listing_type
+        ].join(' '));
+
+        return searchableText.includes(normalizedQuery);
+    });
+
+    if (matchingProperties.length > 0) {
+        // A general search should search both Rent and Sale.
+        // It should not be restricted by the default Rent filter.
+
+        state.filters.location = '';
+        state.filters.houseType = '';
+
+        const el = getElements();
+
+        if (el.location) {
+            el.location.value = '';
+        }
+
+        if (el.houseType) {
+            el.houseType.value = '';
+        }
+
+        applyFiltersAndSort();
+
+        if (el.propertySection) {
+            el.propertySection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        showToast(
+            matchingProperties.length +
+            ' matching property listing(s) found.'
+        );
+
+        return;
+    }
+
+    // No matching property found.
+    // Do not falsely claim that other categories
+    // have already been connected to the database.
+
+    if (el.marketplaceSubtitle) {
+        el.marketplaceSubtitle.textContent =
+            'No matching property listings were found for "' +
+            query +
+            '". More marketplace categories are coming soon.';
+    }
+
+    if (el.marketplaceGrid) {
+        el.marketplaceGrid.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    if (el.propertyGrid) {
+        el.propertyGrid.innerHTML = `
+            <div class="no-results-card"
+                 style="grid-column:1/-1;text-align:center;padding:40px 20px;">
+
+                <h3>No matching property listings</h3>
+
+                <p style="margin-top:10px;line-height:1.7;">
+                    We couldn't find an approved property matching
+                    "${escapeHTML(query)}".
+                    Try another search or explore the marketplace categories.
+                </p>
+
+                <button
+                    type="button"
+                    onclick="resetSearch()"
+                    style="margin-top:20px;padding:12px 22px;border:0;border-radius:7px;background:#FF7139;color:#172554;font-weight:bold;cursor:pointer;">
+
+                    Clear Search
+
+                </button>
+
+            </div>
+        `;
+    }
+}
+
+// =====================================================
+// 10. FETCH APPROVED PROPERTIES
+// =====================================================
 
 async function fetchApprovedProperties() {
     const el = getElements();
 
     if (!supabaseClient) {
-        showMessage('Database connection unavailable. Please refresh the page.');
+        showMessage(
+            'Database connection unavailable. Please refresh the page.'
+        );
         return;
     }
 
@@ -151,8 +397,11 @@ async function fetchApprovedProperties() {
         el.propertyGrid.innerHTML = `
             <div class="search-status"
                  style="grid-column:1/-1;text-align:center;padding:35px;">
+
                 <h3>Loading available properties...</h3>
+
                 <p>Please wait while we load the latest listings.</p>
+
             </div>
         `;
     }
@@ -168,15 +417,12 @@ async function fetchApprovedProperties() {
             throw error;
         }
 
-        // Only approved database listings are displayed.
-        // No demonstration or sample properties are added.
-
         state.properties = Array.isArray(data) ? data : [];
 
         state.loading = false;
 
         console.log(
-            'Approved Prime Spaces properties:',
+            'THE PLUG approved properties:',
             state.properties.length
         );
 
@@ -186,26 +432,39 @@ async function fetchApprovedProperties() {
     } catch (error) {
         state.loading = false;
 
-        console.error('Supabase property loading error:', error);
+        console.error(
+            'THE PLUG property loading error:',
+            error
+        );
 
         if (el.propertyGrid) {
             el.propertyGrid.innerHTML = `
                 <div class="no-results-card"
                      style="grid-column:1/-1;text-align:center;padding:35px;">
+
                     <h3>Unable to load properties</h3>
-                    <p>${escapeHTML(error.message || 'Please check your database connection and permissions.')}</p>
+
+                    <p>
+                        ${escapeHTML(
+                            error.message ||
+                            'Please check your database connection and permissions.'
+                        )}
+                    </p>
+
                 </div>
             `;
         }
     }
 }
 
-// ==========================================
-// 7. SEARCH FUNCTION
-// ==========================================
+// =====================================================
+// 11. PROPERTY SEARCH
+// =====================================================
 
 function searchHouses() {
     const el = getElements();
+
+    state.marketplaceSearch = '';
 
     state.filters.listingType =
         el.listingType ? el.listingType.value.trim() : 'Rent';
@@ -226,9 +485,9 @@ function searchHouses() {
 
 window.searchHouses = searchHouses;
 
-// ==========================================
-// 8. NORMALIZE VALUES
-// ==========================================
+// =====================================================
+// 12. NORMALIZE VALUES
+// =====================================================
 
 function normalize(value) {
     return String(value || '')
@@ -259,9 +518,9 @@ function normalizeListingType(value) {
     return type;
 }
 
-// ==========================================
-// 9. NORMALIZE PROPERTY TYPES
-// ==========================================
+// =====================================================
+// 13. NORMALIZE PROPERTY TYPES
+// =====================================================
 
 function normalizeHouseType(value) {
     const type = normalize(value);
@@ -299,9 +558,9 @@ function normalizeHouseType(value) {
     return aliases[type] || type;
 }
 
-// ==========================================
-// 10. GET PROPERTY LISTING TYPE
-// ==========================================
+// =====================================================
+// 14. GET PROPERTY LISTING TYPE
+// =====================================================
 
 function getPropertyListingType(property) {
     const savedType = normalizeListingType(
@@ -310,15 +569,20 @@ function getPropertyListingType(property) {
         ''
     );
 
-    if (savedType === 'rent' || savedType === 'sale') {
+    if (
+        savedType === 'rent' ||
+        savedType === 'sale'
+    ) {
         return savedType;
     }
 
-    // Fallback for older records with no listing_type.
+    const salePrice =
+        property.sale_price ?? property.sell_price;
+
     if (
-        property.sell_price !== null &&
-        property.sell_price !== undefined &&
-        property.sell_price !== ''
+        salePrice !== null &&
+        salePrice !== undefined &&
+        salePrice !== ''
     ) {
         return 'sale';
     }
@@ -326,15 +590,15 @@ function getPropertyListingType(property) {
     return 'rent';
 }
 
-// ==========================================
-// 11. GET PROPERTY PRICE
-// ==========================================
+// =====================================================
+// 15. GET PROPERTY PRICE
+// =====================================================
 
 function getPropertyPrice(property) {
     const listingType = getPropertyListingType(property);
 
     const rawPrice = listingType === 'sale'
-        ? property.sell_price
+        ? (property.sale_price ?? property.sell_price)
         : property.rent;
 
     const price = Number(rawPrice);
@@ -342,22 +606,17 @@ function getPropertyPrice(property) {
     return Number.isFinite(price) ? price : 0;
 }
 
-// ==========================================
-// 12. GET PROPERTY PHOTOS
-// ==========================================
+// =====================================================
+// 16. GET PROPERTY PHOTOS
+// =====================================================
 
 function getPropertyPhotos(property) {
     let photos = [];
 
-    // Handle photo_urls stored as an array.
-
     if (Array.isArray(property.photo_urls)) {
-        photos = property.photo_urls;
-    }
+        photos = [...property.photo_urls];
 
-    // Handle photo_urls stored as JSON text or comma-separated text.
-
-    else if (typeof property.photo_urls === 'string') {
+    } else if (typeof property.photo_urls === 'string') {
         const savedPhotos = property.photo_urls.trim();
 
         if (savedPhotos) {
@@ -374,21 +633,15 @@ function getPropertyPhotos(property) {
         }
     }
 
-    // Add the main photo if it is not already included.
-
     if (property.photo_url) {
         photos.unshift(property.photo_url);
     }
-
-    // Remove duplicates and empty values.
 
     photos = [...new Set(
         photos
             .map(photo => String(photo || '').trim())
             .filter(Boolean)
     )];
-
-    // Convert storage object paths into public image URLs.
 
     return photos.map(function (photo) {
         if (/^https?:\/\//i.test(photo)) {
@@ -402,16 +655,17 @@ function getPropertyPhotos(property) {
                 .from('property-photos')
                 .getPublicUrl(cleanPath);
 
-            return data.publicUrl;
+            return data.publicUrl || '';
         }
 
         return '';
+
     }).filter(Boolean);
 }
 
-// ==========================================
-// 13. FILTER AND SORT PROPERTIES
-// ==========================================
+// =====================================================
+// 17. FILTER AND SORT PROPERTIES
+// =====================================================
 
 function applyFiltersAndSort() {
     const requestedListingType =
@@ -423,6 +677,9 @@ function applyFiltersAndSort() {
     const requestedHouseType =
         normalizeHouseType(state.filters.houseType);
 
+    const generalQuery =
+        normalize(state.marketplaceSearch);
+
     state.filteredProperties = state.properties.filter(
         function (property) {
             if (property.is_approved !== true) {
@@ -432,7 +689,11 @@ function applyFiltersAndSort() {
             const propertyListingType =
                 getPropertyListingType(property);
 
+            // During a general marketplace search,
+            // search both Rent and Sale listings.
+
             const matchesListingType =
+                generalQuery ||
                 !requestedListingType ||
                 propertyListingType === requestedListingType;
 
@@ -461,15 +722,29 @@ function applyFiltersAndSort() {
                     );
                 });
 
+            const searchableText = normalize([
+                property.title,
+                property.location,
+                property.house_type,
+                property.property_category,
+                property.description,
+                property.listing_type
+            ].join(' '));
+
+            const matchesGeneralSearch =
+                !generalQuery ||
+                searchableText.includes(generalQuery);
+
             return (
                 matchesListingType &&
                 matchesLocation &&
-                matchesHouseType
+                matchesHouseType &&
+                matchesGeneralSearch
             );
         }
     );
 
-    // Sorting
+    // SORT RESULTS
 
     state.filteredProperties.sort(function (a, b) {
         const priceA = getPropertyPrice(a);
@@ -494,17 +769,16 @@ function applyFiltersAndSort() {
     renderProperties();
 }
 
-// ==========================================
-// 14. WHATSAPP NUMBER FORMATTING
-// ==========================================
+// =====================================================
+// 18. WHATSAPP NUMBER FORMATTING
+// =====================================================
 
 function formatWhatsAppNumber(number) {
     let digits = String(number || '').replace(/\D/g, '');
 
-    // Convert Kenyan numbers to international format.
-
     if (digits.startsWith('0') && digits.length === 10) {
         digits = '254' + digits.substring(1);
+
     } else if (
         (digits.startsWith('7') || digits.startsWith('1')) &&
         digits.length === 9
@@ -515,37 +789,43 @@ function formatWhatsAppNumber(number) {
     return digits;
 }
 
-// ==========================================
-// 15. DISPLAY PROPERTY LISTINGS
-// ==========================================
+// =====================================================
+// 19. DISPLAY PROPERTY LISTINGS
+// =====================================================
 
 function renderProperties() {
     const el = getElements();
 
     if (!el.propertyGrid) {
-        console.error('Property grid not found.');
+        console.error('THE PLUG: Property grid not found.');
         return;
     }
 
     el.propertyGrid.innerHTML = '';
 
     if (state.filteredProperties.length === 0) {
+        const isGeneralSearch = Boolean(state.marketplaceSearch);
+
         el.propertyGrid.innerHTML = `
             <div class="no-results-card"
                  style="grid-column:1/-1;text-align:center;padding:45px 20px;">
 
-                <div style="font-size:42px;">🏠</div>
-
-                <h3>No properties found</h3>
+                <h3>
+                    ${isGeneralSearch
+                        ? 'No matching listings found'
+                        : 'No properties found'}
+                </h3>
 
                 <p style="margin-top:10px;line-height:1.6;">
-                    There are currently no approved properties matching
-                    your search. Try another location or property type.
+                    ${isGeneralSearch
+                        ? 'Try another search term or explore our marketplace categories.'
+                        : 'There are currently no approved properties matching your search. Try another location or property type.'}
                 </p>
 
-                <button type="button"
+                <button
+                    type="button"
                     onclick="resetSearch()"
-                    style="margin-top:20px;padding:13px 25px;border:none;border-radius:7px;background:#f4a62a;color:#102b50;font-weight:bold;cursor:pointer;">
+                    style="margin-top:20px;padding:13px 25px;border:none;border-radius:7px;background:#FF7139;color:#172554;font-weight:bold;cursor:pointer;">
 
                     Clear Search
 
@@ -612,8 +892,6 @@ function renderProperties() {
         const whatsapp = formatWhatsAppNumber(
             property.whatsapp_number
         );
-
-        // Display landlord-uploaded photographs.
 
         const photoGallery = photos.length > 0
             ? `
@@ -715,9 +993,9 @@ function renderProperties() {
     });
 }
 
-// ==========================================
-// 16. RESET SEARCH
-// ==========================================
+// =====================================================
+// 20. RESET SEARCH
+// =====================================================
 
 function resetSearch() {
     const el = getElements();
@@ -734,15 +1012,20 @@ function resetSearch() {
         el.houseType.value = '';
     }
 
-    state.filters.listingType = 'Rent';
-    state.filters.location = '';
-    state.filters.houseType = '';
-
-    state.currentSort = 'newest';
+    if (el.plugSearch) {
+        el.plugSearch.value = '';
+    }
 
     if (el.sortSelect) {
         el.sortSelect.value = 'newest';
     }
+
+    state.filters.listingType = 'Rent';
+    state.filters.location = '';
+    state.filters.houseType = '';
+
+    state.marketplaceSearch = '';
+    state.currentSort = 'newest';
 
     if (state.loading) {
         showMessage('Loading properties. Please wait.');
@@ -754,25 +1037,34 @@ function resetSearch() {
 
 window.resetSearch = resetSearch;
 
-// ==========================================
-// 17. FAVOURITES
-// ==========================================
+// =====================================================
+// 21. FAVOURITES
+// =====================================================
 
 function toggleFavourite(propertyId) {
+    propertyId = String(propertyId);
+
     const index = state.favourites.indexOf(propertyId);
 
     if (index === -1) {
         state.favourites.push(propertyId);
-        showToast('Property added to favourites!');
+        showToast('Added to favourites!');
+
     } else {
         state.favourites.splice(index, 1);
-        showToast('Property removed from favourites.');
+        showToast('Removed from favourites.');
     }
 
-    localStorage.setItem(
-        'prime_cribs_favourites',
-        JSON.stringify(state.favourites)
-    );
+    try {
+        localStorage.setItem(
+            'prime_cribs_favourites',
+            JSON.stringify(state.favourites)
+        );
+
+    } catch (error) {
+        console.error('Unable to save favourites:', error);
+        showToast('Unable to save favourites on this device.');
+    }
 
     renderProperties();
     renderFavouritesView();
@@ -780,9 +1072,9 @@ function toggleFavourite(propertyId) {
 
 window.toggleFavourite = toggleFavourite;
 
-// ==========================================
-// 18. DISPLAY SAVED FAVOURITES
-// ==========================================
+// =====================================================
+// 22. DISPLAY FAVOURITES
+// =====================================================
 
 function renderFavouritesView() {
     const el = getElements();
@@ -795,7 +1087,10 @@ function renderFavouritesView() {
 
     const favouriteProperties = state.properties.filter(
         function (property) {
-            return state.favourites.includes(String(property.id));
+            return (
+                property.is_approved === true &&
+                state.favourites.includes(String(property.id))
+            );
         }
     );
 
@@ -858,9 +1153,9 @@ function renderFavouritesView() {
     });
 }
 
-// ==========================================
-// 19. TOAST NOTIFICATIONS
-// ==========================================
+// =====================================================
+// 23. TOAST NOTIFICATIONS
+// =====================================================
 
 function showToast(message) {
     let toast = document.getElementById('prime-toast');
@@ -875,13 +1170,15 @@ function showToast(message) {
             bottom:25px;
             left:50%;
             transform:translateX(-50%);
-            background:#102b50;
-            color:white;
+            background:#172554;
+            color:#F7F5EF;
             padding:14px 22px;
             border-radius:8px;
             z-index:9999;
             font-size:14px;
             box-shadow:0 4px 15px rgba(0,0,0,0.2);
+            max-width:90%;
+            text-align:center;
         `;
 
         document.body.appendChild(toast);
@@ -890,16 +1187,18 @@ function showToast(message) {
     toast.textContent = message;
     toast.style.display = 'block';
 
-    clearTimeout(toast.hideTimer);
+    if (toast.hideTimer) {
+        clearTimeout(toast.hideTimer);
+    }
 
     toast.hideTimer = setTimeout(function () {
         toast.style.display = 'none';
-    }, 2500);
+    }, 2800);
 }
 
-// ==========================================
-// 20. GENERAL MESSAGE
-// ==========================================
+// =====================================================
+// 24. GENERAL MESSAGE
+// =====================================================
 
 function showMessage(message) {
     const el = getElements();
@@ -913,9 +1212,9 @@ function showMessage(message) {
     }
 }
 
-// ==========================================
-// 21. HTML SECURITY
-// ==========================================
+// =====================================================
+// 25. HTML SECURITY
+// =====================================================
 
 function escapeHTML(value) {
     return String(value ?? '').replace(
@@ -932,8 +1231,8 @@ function escapeHTML(value) {
     );
 }
 
-// ==========================================
-// 22. APPLICATION READY
-// ==========================================
+// =====================================================
+// 26. APPLICATION READY
+// =====================================================
 
-console.log('Prime Spaces live property application ready.');
+console.log('THE PLUG application ready.');
