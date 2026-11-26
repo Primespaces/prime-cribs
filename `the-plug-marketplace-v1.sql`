@@ -1,8 +1,8 @@
--- ==========================================
--- THE PLUG: MARKETPLACE EXPANSION
--- Version 1 - Additive migration
--- Existing property tables remain untouched.
--- ==========================================
+-- =====================================================
+-- THE PLUG MARKETPLACE V1
+-- Additive database migration
+-- Existing property system remains untouched.
+-- =====================================================
 
 -- 1. ADMIN VERIFICATION
 -- Uses the existing admin_users.user_id column.
@@ -17,7 +17,7 @@ as $$
     select exists (
         select 1
         from public.admin_users
-        where user_id = auth.uid()
+        where user_id = (select auth.uid())
     );
 $$;
 
@@ -45,8 +45,7 @@ values
 on conflict (slug) do nothing;
 
 
--- 3. USER CAPABILITIES
--- One user can have several capabilities.
+-- 3. USER ROLES
 
 create table if not exists public.user_roles (
     id uuid primary key default gen_random_uuid(),
@@ -90,20 +89,23 @@ create table if not exists public.marketplace_listings (
     title text not null,
     description text,
     price numeric(12,2) check (price is null or price >= 0),
-    price_type text default 'fixed'
+    price_type text not null default 'fixed'
         check (price_type in ('fixed', 'negotiable', 'contact')),
     location text,
     photos text[] not null default '{}',
     status text not null default 'pending'
-        check (status in ('pending', 'approved', 'rejected', 'suspended', 'sold', 'completed')),
-    admin_notes text,
+        check (status in (
+            'pending', 'approved', 'rejected',
+            'suspended', 'sold', 'completed'
+        )),
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
 
 
 -- 6. CUSTOMER INQUIRIES
--- Customers contact THE PLUG, not the listing owner directly.
+-- Customers contact THE PLUG first.
+-- No provider phone numbers are stored here.
 
 create table if not exists public.marketplace_inquiries (
     id uuid primary key default gen_random_uuid(),
@@ -113,13 +115,16 @@ create table if not exists public.marketplace_inquiries (
     customer_phone text not null,
     message text not null,
     status text not null default 'new'
-        check (status in ('new', 'reviewing', 'contacted', 'negotiating', 'converted', 'closed')),
-    admin_notes text,
+        check (status in (
+            'new', 'reviewing', 'contacted',
+            'negotiating', 'converted', 'closed'
+        )),
     created_at timestamptz not null default now()
 );
 
 
 -- 7. TRANSACTION TRACKING
+-- Administrators coordinate transaction progress.
 
 create table if not exists public.marketplace_transactions (
     id uuid primary key default gen_random_uuid(),
@@ -129,21 +134,30 @@ create table if not exists public.marketplace_transactions (
     provider_id uuid references auth.users(id) on delete set null,
     status text not null default 'initiated'
         check (status in (
-            'initiated',
-            'verification',
-            'negotiation',
-            'confirmed',
-            'completed',
-            'cancelled',
-            'disputed'
+            'initiated', 'verification', 'negotiation',
+            'confirmed', 'completed', 'cancelled', 'disputed'
         )),
-    admin_notes text,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
 
 
--- 8. USER REPORTS
+-- 8. PRIVATE ADMIN NOTES
+-- Separate table so public users cannot read internal notes.
+
+create table if not exists public.marketplace_admin_notes (
+    id uuid primary key default gen_random_uuid(),
+    entity_type text not null check (
+        entity_type in ('listing', 'inquiry', 'transaction', 'report')
+    ),
+    entity_id uuid not null,
+    admin_user_id uuid not null references auth.users(id),
+    note text not null,
+    created_at timestamptz not null default now()
+);
+
+
+-- 9. USER REPORTS
 
 create table if not exists public.user_reports (
     id uuid primary key default gen_random_uuid(),
@@ -152,12 +166,14 @@ create table if not exists public.user_reports (
     reason text not null,
     details text,
     status text not null default 'open'
-        check (status in ('open', 'investigating', 'resolved', 'dismissed')),
+        check (status in (
+            'open', 'investigating', 'resolved', 'dismissed'
+        )),
     created_at timestamptz not null default now()
 );
 
 
--- 9. ENABLE ROW LEVEL SECURITY
+-- 10. ENABLE ROW LEVEL SECURITY
 
 alter table public.marketplace_categories enable row level security;
 alter table public.user_roles enable row level security;
@@ -165,10 +181,11 @@ alter table public.provider_profiles enable row level security;
 alter table public.marketplace_listings enable row level security;
 alter table public.marketplace_inquiries enable row level security;
 alter table public.marketplace_transactions enable row level security;
+alter table public.marketplace_admin_notes enable row level security;
 alter table public.user_reports enable row level security;
 
 
--- 10. CATEGORY POLICIES
+-- 11. CATEGORY POLICIES
 
 drop policy if exists "Public view active categories"
 on public.marketplace_categories;
@@ -188,7 +205,7 @@ using (public.is_plug_admin())
 with check (public.is_plug_admin());
 
 
--- 11. USER ROLE POLICIES
+-- 12. USER ROLE POLICIES
 
 drop policy if exists "Users view own roles"
 on public.user_roles;
@@ -196,7 +213,7 @@ on public.user_roles;
 create policy "Users view own roles"
 on public.user_roles
 for select to authenticated
-using (user_id = auth.uid() or public.is_plug_admin());
+using (user_id = (select auth.uid()) or public.is_plug_admin());
 
 drop policy if exists "Users add own capabilities"
 on public.user_roles;
@@ -204,7 +221,7 @@ on public.user_roles;
 create policy "Users add own capabilities"
 on public.user_roles
 for insert to authenticated
-with check (user_id = auth.uid());
+with check (user_id = (select auth.uid()));
 
 drop policy if exists "Users remove own capabilities"
 on public.user_roles;
@@ -212,10 +229,10 @@ on public.user_roles;
 create policy "Users remove own capabilities"
 on public.user_roles
 for delete to authenticated
-using (user_id = auth.uid() or public.is_plug_admin());
+using (user_id = (select auth.uid()) or public.is_plug_admin());
 
 
--- 12. PROVIDER PROFILE POLICIES
+-- 13. PROVIDER PROFILE POLICIES
 
 drop policy if exists "Public view approved providers"
 on public.provider_profiles;
@@ -225,7 +242,7 @@ on public.provider_profiles
 for select to anon, authenticated
 using (
     approval_status = 'approved'
-    or user_id = auth.uid()
+    or user_id = (select auth.uid())
     or public.is_plug_admin()
 );
 
@@ -236,24 +253,36 @@ create policy "Providers create own profile"
 on public.provider_profiles
 for insert to authenticated
 with check (
-    user_id = auth.uid()
+    user_id = (select auth.uid())
     and approval_status = 'pending'
 );
 
-drop policy if exists "Providers update own profile"
+drop policy if exists "Providers update own pending profile"
 on public.provider_profiles;
 
-create policy "Providers update own profile"
+create policy "Providers update own pending profile"
 on public.provider_profiles
 for update to authenticated
-using (user_id = auth.uid() or public.is_plug_admin())
+using (
+    user_id = (select auth.uid())
+    and approval_status = 'pending'
+)
 with check (
-    user_id = auth.uid()
-    or public.is_plug_admin()
+    user_id = (select auth.uid())
+    and approval_status = 'pending'
 );
 
+drop policy if exists "Admins manage provider profiles"
+on public.provider_profiles;
 
--- 13. LISTING POLICIES
+create policy "Admins manage provider profiles"
+on public.provider_profiles
+for all to authenticated
+using (public.is_plug_admin())
+with check (public.is_plug_admin());
+
+
+-- 14. LISTING POLICIES
 
 drop policy if exists "Public view approved marketplace listings"
 on public.marketplace_listings;
@@ -263,7 +292,7 @@ on public.marketplace_listings
 for select to anon, authenticated
 using (
     status = 'approved'
-    or owner_id = auth.uid()
+    or owner_id = (select auth.uid())
     or public.is_plug_admin()
 );
 
@@ -274,7 +303,7 @@ create policy "Users submit marketplace listings"
 on public.marketplace_listings
 for insert to authenticated
 with check (
-    owner_id = auth.uid()
+    owner_id = (select auth.uid())
     and status = 'pending'
 );
 
@@ -285,11 +314,11 @@ create policy "Owners update pending listings"
 on public.marketplace_listings
 for update to authenticated
 using (
-    owner_id = auth.uid()
+    owner_id = (select auth.uid())
     and status = 'pending'
 )
 with check (
-    owner_id = auth.uid()
+    owner_id = (select auth.uid())
     and status = 'pending'
 );
 
@@ -300,7 +329,7 @@ create policy "Owners delete pending listings"
 on public.marketplace_listings
 for delete to authenticated
 using (
-    owner_id = auth.uid()
+    owner_id = (select auth.uid())
     and status = 'pending'
 );
 
@@ -314,7 +343,7 @@ using (public.is_plug_admin())
 with check (public.is_plug_admin());
 
 
--- 14. INQUIRY POLICIES
+-- 15. INQUIRY POLICIES
 
 drop policy if exists "Customers submit inquiries"
 on public.marketplace_inquiries;
@@ -323,8 +352,17 @@ create policy "Customers submit inquiries"
 on public.marketplace_inquiries
 for insert to anon, authenticated
 with check (
-    customer_id is null
-    or customer_id = auth.uid()
+    (customer_id is null or customer_id = (select auth.uid()))
+    and status = 'new'
+    and (
+        listing_id is null
+        or exists (
+            select 1
+            from public.marketplace_listings l
+            where l.id = listing_id
+            and l.status = 'approved'
+        )
+    )
 );
 
 drop policy if exists "Customers view own inquiries"
@@ -334,7 +372,7 @@ create policy "Customers view own inquiries"
 on public.marketplace_inquiries
 for select to authenticated
 using (
-    customer_id = auth.uid()
+    customer_id = (select auth.uid())
     or public.is_plug_admin()
 );
 
@@ -348,8 +386,7 @@ using (public.is_plug_admin())
 with check (public.is_plug_admin());
 
 
--- 15. TRANSACTION POLICIES
--- Only administrators can access transaction records.
+-- 16. TRANSACTION POLICIES
 
 drop policy if exists "Admins manage transactions"
 on public.marketplace_transactions;
@@ -361,7 +398,22 @@ using (public.is_plug_admin())
 with check (public.is_plug_admin());
 
 
--- 16. REPORT POLICIES
+-- 17. PRIVATE ADMIN NOTES POLICIES
+
+drop policy if exists "Admins manage private notes"
+on public.marketplace_admin_notes;
+
+create policy "Admins manage private notes"
+on public.marketplace_admin_notes
+for all to authenticated
+using (public.is_plug_admin())
+with check (
+    public.is_plug_admin()
+    and admin_user_id = (select auth.uid())
+);
+
+
+-- 18. REPORT POLICIES
 
 drop policy if exists "Users submit reports"
 on public.user_reports;
@@ -370,8 +422,8 @@ create policy "Users submit reports"
 on public.user_reports
 for insert to anon, authenticated
 with check (
-    reporter_id is null
-    or reporter_id = auth.uid()
+    (reporter_id is null or reporter_id = (select auth.uid()))
+    and status = 'open'
 );
 
 drop policy if exists "Reporters view own reports"
@@ -381,7 +433,7 @@ create policy "Reporters view own reports"
 on public.user_reports
 for select to authenticated
 using (
-    reporter_id = auth.uid()
+    reporter_id = (select auth.uid())
     or public.is_plug_admin()
 );
 
@@ -395,17 +447,33 @@ using (public.is_plug_admin())
 with check (public.is_plug_admin());
 
 
--- 17. BASIC TABLE PERMISSIONS
+-- 19. TABLE PERMISSIONS
 
 grant select on public.marketplace_categories to anon, authenticated;
 grant all on public.marketplace_categories to authenticated;
-grant all on public.user_roles to authenticated;
-grant all on public.provider_profiles to authenticated;
-grant all on public.marketplace_listings to authenticated;
-grant select, insert on public.marketplace_inquiries to anon;
-grant select, insert, update on public.marketplace_inquiries to authenticated;
-grant select, insert on public.user_reports to anon;
-grant select, insert on public.user_reports to authenticated;
-grant all on public.marketplace_transactions to authenticated;
 
--- END OF THE PLUG MARKETPLACE EXPANSION
+grant select, insert, delete on public.user_roles to authenticated;
+
+grant select on public.provider_profiles to anon, authenticated;
+grant insert, update on public.provider_profiles to authenticated;
+
+grant select on public.marketplace_listings to anon, authenticated;
+grant insert, update, delete on public.marketplace_listings to authenticated;
+
+grant insert (
+    listing_id, customer_id, customer_name,
+    customer_phone, message
+) on public.marketplace_inquiries to anon, authenticated;
+
+grant select, update on public.marketplace_inquiries to authenticated;
+
+grant all on public.marketplace_transactions to authenticated;
+grant all on public.marketplace_admin_notes to authenticated;
+
+grant insert (
+    reporter_id, listing_id, reason, details
+) on public.user_reports to anon, authenticated;
+
+grant select on public.user_reports to authenticated;
+
+-- END OF THE PLUG MARKETPLACE V1
