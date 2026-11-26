@@ -4,328 +4,838 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Prime Spaces | Rentals & Property Sales</title>
+    <title>THE PLUG | Find It. Connect. Get It Done.</title>
 
-    <meta name="description" content="Find houses, apartments, shops and commercial properties for rent or sale across Kenya.">
+    <meta name="description" content="THE PLUG is your marketplace to discover properties, shop products, find service providers, hire equipment and connect with taskers across Kenya.">
+
+    <meta name="theme-color" content="#172554">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-    <!-- NAVIGATION -->
-    <header class="main-header">
-        <div class="nav-container">
+<!-- ================= HEADER ================= -->
 
-            <a href="index.html" class="logo">
-                PRIME <span>SPACES</span>
-            </a>
+<header class="main-header">
+    <div class="nav-container">
 
-            <nav>
-                <a href="#home">Home</a>
-                <a href="#properties">Explore Properties</a>
-                <a href="#locations">Locations</a>
-                <a href="#contact">Contact</a>
-                <a href="landlord.html" class="list-button">
-                    List Your Property
-                </a>
-            </nav>
-
-        </div>
-    </header>
-
-    <main>
-
-        <!-- HERO SECTION -->
-        <section class="hero" id="home">
-
-            <div class="hero-overlay"></div>
-
-            <div class="hero-content">
-
-                <span class="hero-tag">
-                    YOUR PROPERTY, YOUR CHOICE
-                </span>
-
-                <h1>
-                    Find a Space<br>You’ll Love.
-                </h1>
-
-                <p>
-                    Discover beautiful homes, apartments and commercial
-                    spaces for rent or sale across Kenya.
-                </p>
-
-                <!-- PROPERTY SEARCH -->
-                <div class="search-box">
-
-                    <select id="listingType" aria-label="Listing type">
-                        <option value="Rent">For Rent</option>
-                        <option value="Sale">For Sale</option>
-                    </select>
-
-                    <input
-                        type="text"
-                        id="location"
-                        placeholder="Where do you want to live?"
-                        aria-label="Search by location"
-                    >
-
-                    <select id="houseType" aria-label="Property type">
-                        <option value="">All Property Types</option>
-                        <option value="Bedsitter">Bedsitter</option>
-                        <option value="Studio">Studio</option>
-                        <option value="One Bedroom">One Bedroom</option>
-                        <option value="Two Bedroom">Two Bedroom</option>
-                        <option value="Three Bedroom">Three Bedroom</option>
-                        <option value="Apartment">Apartment</option>
-                        <option value="House">House</option>
-                        <option value="Shop">Shop</option>
-                        <option value="Office">Office Space</option>
-                        <option value="Commercial">Commercial Property</option>
-                    </select>
-
-                    <button type="button" onclick="searchHouses()">
-                        Search Properties
-                    </button>
-
-                </div>
-
-                <div class="hero-trust">
-                    <span>●</span> Explore available properties across Kenya
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- PROPERTY CATEGORIES -->
-        <section class="container categories">
-
-            <div class="section-intro">
-                <span class="section-kicker">FIND YOUR SPACE</span>
-                <h2>Explore Property Categories</h2>
-                <p>Find the perfect space for your home or business.</p>
-            </div>
-
-            <div class="category-grid">
-
-                <a href="#properties" class="category-card">
-                    <span class="category-icon">⌂</span>
-                    <h3>Houses</h3>
-                    <p>Find your next home.</p>
-                    <span class="category-link">Explore properties →</span>
-                </a>
-
-                <a href="#properties" class="category-card">
-                    <span class="category-icon">▦</span>
-                    <h3>Apartments</h3>
-                    <p>Modern living spaces.</p>
-                    <span class="category-link">Explore properties →</span>
-                </a>
-
-                <a href="#properties" class="category-card">
-                    <span class="category-icon">▤</span>
-                    <h3>Shops</h3>
-                    <p>Spaces for businesses.</p>
-                    <span class="category-link">Explore properties →</span>
-                </a>
-
-                <a href="#properties" class="category-card">
-                    <span class="category-icon">⌑</span>
-                    <h3>Commercial</h3>
-                    <p>Offices and business spaces.</p>
-                    <span class="category-link">Explore properties →</span>
-                </a>
-
-            </div>
-
-        </section>
-
-
-        <!-- PROPERTY LISTINGS -->
-        <section class="container listings-section" id="properties">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">DISCOVER YOUR NEXT SPACE</span>
-                    <h2>Available Properties</h2>
-                    <p>Explore property listings on Prime Spaces.</p>
-                </div>
-
-                <div class="sorting">
-                    <label for="sort-select">Sort by</label>
-                    <select id="sort-select">
-                        <option value="newest">Newest First</option>
-                        <option value="lowest-price">Lowest Price</option>
-                        <option value="highest-price">Highest Price</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- SUPABASE LISTINGS LOAD HERE -->
-            <div class="properties" id="property-grid">
-
-                <div class="search-status">
-                    <h3>Loading available properties...</h3>
-                    <p>Please wait while we load property listings.</p>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- FAVOURITES -->
-        <section class="container favourites-section" id="favourites">
-
-            <div class="section-heading">
-                <div>
-                    <span class="section-kicker">KEEP YOUR PICKS</span>
-                    <h2>Your Saved Properties</h2>
-                    <p>Properties you have added to your favourites.</p>
-                </div>
-            </div>
-
-            <div class="properties" id="favourites-grid">
-                <p>You have not saved any properties yet.</p>
-            </div>
-
-        </section>
-
-
-        <!-- POPULAR LOCATIONS -->
-        <section class="container locations" id="locations">
-
-            <div class="section-intro">
-                <span class="section-kicker">EXPLORE KENYA</span>
-                <h2>Popular Locations</h2>
-                <p>Discover properties in popular residential and commercial areas.</p>
-            </div>
-
-            <div class="location-list">
-                <span>Kahawa Wendani</span>
-                <span>Kahawa Sukari</span>
-                <span>Kahawa West</span>
-                <span>Githurai</span>
-                <span>Roysambu</span>
-                <span>Zimmerman</span>
-                <span>Kasarani</span>
-                <span>Ruiru</span>
-                <span>Kilimani</span>
-                <span>South B</span>
-                <span>South C</span>
-                <span>Embakasi</span>
-            </div>
-
-        </section>
-
-
-        <!-- LANDLORD SECTION -->
-        <section class="landlord-section">
-
-            <div class="landlord-content">
-                <span class="section-kicker">FOR PROPERTY OWNERS</span>
-
-                <h2>Have a Property to Rent or Sell?</h2>
-
-                <p>
-                    Reach people looking for their next home
-                    or business space. List your property on Prime Spaces.
-                </p>
-
-                <a href="landlord.html">
-                    List Your Property
-                </a>
-            </div>
-
-        </section>
-
-
-        <!-- CONTACT SECTION -->
-        <section class="container contact-section" id="contact">
-
-            <div class="contact-intro">
-                <span class="section-kicker">WE ARE HERE TO HELP</span>
-                <h2>Let's Find Your Space.</h2>
-                <p>
-                    Have a question about a property, need assistance
-                    or want to list your property? Get in touch with us.
-                </p>
-            </div>
-
-            <div class="contact-grid">
-
-                <a class="contact-card" href="tel:+254758871230">
-                    <span class="contact-icon">☎</span>
-                    <span class="contact-label">CALL US</span>
-                    <strong>0758 871 230</strong>
-                    <span class="contact-action">Speak to our team →</span>
-                </a>
-
-                <a class="contact-card whatsapp-contact"
-                   href="https://wa.me/254758871230"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    <span class="contact-icon">◉</span>
-                    <span class="contact-label">WHATSAPP</span>
-                    <strong>Chat with us</strong>
-                    <span class="contact-action">Send us a message →</span>
-                </a>
-
-                <a class="contact-card"
-                   href="mailto:muthurievs77@gmail.com">
-                    <span class="contact-icon">✉</span>
-                    <span class="contact-label">EMAIL US</span>
-                    <strong class="email-address">muthurievs77@gmail.com</strong>
-                    <span class="contact-action">Send an email →</span>
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- FOOTER -->
-    <footer>
-
-        <a href="#home" class="footer-logo">
-            PRIME <span>SPACES</span>
+        <a href="index.html" class="logo" aria-label="THE PLUG homepage">
+            THE <span>PLUG.</span>
         </a>
 
-        <p class="footer-tagline">
-            Your space. Your choice. Your future.
+        <button class="menu-toggle"
+                id="menu-toggle"
+                aria-label="Open navigation"
+                aria-expanded="false">
+            ☰
+        </button>
+
+        <nav id="main-nav">
+            <a href="#home">Home</a>
+            <a href="#categories">Explore</a>
+            <a href="#properties">Properties</a>
+            <a href="#grow">Partner with us</a>
+            <a href="#contact">Contact</a>
+            <a href="landlord.html" class="nav-cta">List an item</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <span class="hero-tag">
+            YOUR MARKETPLACE. YOUR CONNECTIONS.
+        </span>
+
+        <h1>
+            Whatever you need.<br>
+            <span>Find it on THE PLUG.</span>
+        </h1>
+
+        <p>
+            From properties and products to services, equipment
+            and everyday tasks — discover opportunities and
+            connect with the right people in one place.
         </p>
 
-        <div class="footer-links">
-            <a href="#home">Home</a>
-            <a href="#properties">Properties</a>
-            <a href="#locations">Locations</a>
-            <a href="#contact">Contact</a>
-            <a href="landlord.html">List Property</a>
+        <div class="plug-search-box">
+
+            <input
+                type="search"
+                id="plug-search"
+                placeholder="What are you looking for today?"
+                aria-label="Search the marketplace"
+            >
+
+            <button type="button" id="plug-search-btn">
+                Search
+            </button>
+
         </div>
 
-        <p class="footer-business">
-            Rentals | Property Sales | Commercial Spaces
+        <div class="hero-links">
+            <a href="#categories" class="explore-button">
+                Explore marketplace <span>→</span>
+            </a>
+
+            <a href="landlord.html" class="hero-secondary-link">
+                Become a partner
+            </a>
+        </div>
+
+        <div class="hero-trust">
+            <span>One marketplace</span>
+            <span class="trust-dot"></span>
+            <span>Multiple opportunities</span>
+            <span class="trust-dot"></span>
+            <span>Made for Kenya</span>
+        </div>
+
+    </div>
+
+    <div class="hero-decoration" aria-hidden="true">
+        <div class="hero-orbit orbit-one"></div>
+        <div class="hero-orbit orbit-two"></div>
+        <div class="hero-accent"></div>
+    </div>
+
+</section>
+
+
+<!-- ================= MARKETPLACE CATEGORIES ================= -->
+
+<section class="container categories" id="categories">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="section-eyebrow">EXPLORE THE PLUG</span>
+
+            <h2>What are you looking for?</h2>
+
+            <p>
+                Everything you need, organised into one marketplace.
+            </p>
+        </div>
+
+        <span class="section-side-note">
+            Explore our categories <span>↓</span>
+        </span>
+
+    </div>
+
+
+    <div class="category-grid">
+
+        <button class="category-card plug-category"
+                type="button"
+                data-category="property">
+
+            <div class="category-image category-property">
+                <span class="category-number">01</span>
+                <span class="category-arrow">↗</span>
+            </div>
+
+            <div class="category-card-content">
+                <span class="category-label">FIND YOUR SPACE</span>
+                <h3>Property</h3>
+                <p>Houses, apartments, land and commercial spaces.</p>
+            </div>
+
+        </button>
+
+
+        <button class="category-card plug-category"
+                type="button"
+                data-category="buy-sell">
+
+            <div class="category-image category-market">
+                <span class="category-number">02</span>
+                <span class="category-arrow">↗</span>
+            </div>
+
+            <div class="category-card-content">
+                <span class="category-label">SHOP & DISCOVER</span>
+                <h3>Buy & Sell</h3>
+                <p>Discover products and connect with sellers.</p>
+            </div>
+
+        </button>
+
+
+        <button class="category-card plug-category"
+                type="button"
+                data-category="services">
+
+            <div class="category-image category-services">
+                <span class="category-number">03</span>
+                <span class="category-arrow">↗</span>
+            </div>
+
+            <div class="category-card-content">
+                <span class="category-label">FIND EXPERTS</span>
+                <h3>Services</h3>
+                <p>Connect with skilled professionals and businesses.</p>
+            </div>
+
+        </button>
+
+
+        <button class="category-card plug-category"
+                type="button"
+                data-category="hire">
+
+            <div class="category-image category-hire">
+                <span class="category-number">04</span>
+                <span class="category-arrow">↗</span>
+            </div>
+
+            <div class="category-card-content">
+                <span class="category-label">GET WHAT YOU NEED</span>
+                <h3>Hire</h3>
+                <p>Find equipment, tools and other items to hire.</p>
+            </div>
+
+        </button>
+
+
+        <button class="category-card plug-category"
+                type="button"
+                data-category="taskers">
+
+            <div class="category-image category-taskers">
+                <span class="category-number">05</span>
+                <span class="category-arrow">↗</span>
+            </div>
+
+            <div class="category-card-content">
+                <span class="category-label">GET THINGS DONE</span>
+                <h3>Taskers</h3>
+                <p>Find people to help with your everyday tasks.</p>
+            </div>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MARKETPLACE DISCOVERY ================= -->
+
+<section class="container discovery-section" id="marketplace">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="section-eyebrow">DISCOVER MORE</span>
+
+            <h2>Explore the marketplace</h2>
+
+            <p id="marketplace-subtitle">
+                Find something useful or discover your next opportunity.
+            </p>
+        </div>
+
+        <a href="#categories" class="text-link">
+            Browse categories <span>→</span>
+        </a>
+
+    </div>
+
+
+    <div class="marketplace-grid" id="marketplace-grid">
+
+        <article class="marketplace-feature-card">
+
+            <div class="feature-image feature-property-image">
+                <span class="feature-label">PROPERTY</span>
+            </div>
+
+            <div class="feature-content">
+                <span class="feature-kicker">YOUR NEXT SPACE</span>
+                <h3>Find a place to call home.</h3>
+                <p>
+                    Explore rental and sale properties and connect
+                    with property owners.
+                </p>
+                <a href="#properties">Explore properties <span>→</span></a>
+            </div>
+
+        </article>
+
+
+        <article class="marketplace-feature-card">
+
+            <div class="feature-image feature-products-image">
+                <span class="feature-label">BUY & SELL</span>
+            </div>
+
+            <div class="feature-content">
+                <span class="feature-kicker">MAKE A CONNECTION</span>
+                <h3>Discover products and deals.</h3>
+                <p>
+                    Find products and connect with people
+                    offering what you need.
+                </p>
+                <a href="#grow">Become a seller <span>→</span></a>
+            </div>
+
+        </article>
+
+
+        <article class="marketplace-feature-card">
+
+            <div class="feature-image feature-services-image">
+                <span class="feature-label">SERVICES</span>
+            </div>
+
+            <div class="feature-content">
+                <span class="feature-kicker">SKILLS MEET OPPORTUNITY</span>
+                <h3>Find the right person for the job.</h3>
+                <p>
+                    Discover service providers and skilled
+                    professionals.
+                </p>
+                <a href="#grow">Offer your services <span>→</span></a>
+            </div>
+
+        </article>
+
+
+        <article class="marketplace-feature-card">
+
+            <div class="feature-image feature-hire-image">
+                <span class="feature-label">HIRE & TASKS</span>
+            </div>
+
+            <div class="feature-content">
+                <span class="feature-kicker">MAKE LIFE EASIER</span>
+                <h3>Get the help and equipment you need.</h3>
+                <p>
+                    Discover useful equipment and connect
+                    with people ready to help.
+                </p>
+                <a href="#grow">Join the network <span>→</span></a>
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PROPERTY SEARCH ================= -->
+
+<section class="property-discovery" id="property-search">
+
+    <div class="container">
+
+        <div class="property-intro">
+
+            <div>
+                <span class="section-eyebrow">THE PROPERTY PLUG</span>
+
+                <h2>Find a space that fits your life.</h2>
+
+                <p>
+                    Browse available rental and sale properties.
+                    Your next space could be one search away.
+                </p>
+            </div>
+
+            <a href="landlord.html" class="property-list-link">
+                List your property <span>→</span>
+            </a>
+
+        </div>
+
+
+        <div class="search-box">
+
+            <select id="listingType" aria-label="Choose listing type">
+                <option value="">Rent or Buy</option>
+                <option value="rent">For Rent</option>
+                <option value="sale">For Sale</option>
+            </select>
+
+            <input
+                type="text"
+                id="location"
+                placeholder="Enter location"
+                aria-label="Property location"
+            >
+
+            <select id="houseType" aria-label="Choose property type">
+                <option value="">All property types</option>
+                <option value="bedsitter">Bedsitter</option>
+                <option value="single room">Single Room</option>
+                <option value="1 bedroom">1 Bedroom</option>
+                <option value="2 bedroom">2 Bedroom</option>
+                <option value="3 bedroom">3 Bedroom</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+                <option value="shop">Shop</option>
+                <option value="commercial">Commercial</option>
+                <option value="land">Land</option>
+            </select>
+
+            <button type="button" onclick="searchHouses()">
+                Search properties
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PROPERTY LISTINGS ================= -->
+
+<section class="container listings-section" id="properties">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="section-eyebrow">PROPERTY DISCOVERY</span>
+
+            <h2>Explore available properties</h2>
+
+            <p>
+                Discover spaces currently listed on THE PLUG.
+            </p>
+        </div>
+
+        <div class="sorting">
+
+            <select id="sort-select" aria-label="Sort properties">
+                <option value="newest">Newest first</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="properties" id="property-grid">
+
+        <div class="search-status">
+            <h3>Loading properties...</h3>
+            <p>Please wait while we find available listings.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FAVOURITES ================= -->
+
+<section class="container favourites-section" id="favourites">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="section-eyebrow">YOUR SAVED SPACES</span>
+
+            <h2>Your favourites</h2>
+
+            <p>
+                Keep the properties you like in one convenient place.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="properties" id="favourites-grid">
+
+        <p>You haven't saved any properties yet.</p>
+
+    </div>
+
+</section>
+
+
+<!-- ================= WHY THE PLUG ================= -->
+
+<section class="why-plug-section">
+
+    <div class="container why-plug-container">
+
+        <div class="why-plug-copy">
+
+            <span class="section-eyebrow">MORE THAN A MARKETPLACE</span>
+
+            <h2>
+                The right connection<br>
+                changes everything.
+            </h2>
+
+            <p>
+                THE PLUG brings people, products, properties and
+                opportunities together. Instead of searching
+                everywhere, start with one place.
+            </p>
+
+            <a href="#categories" class="explore-button">
+                Discover THE PLUG <span>→</span>
+            </a>
+
+        </div>
+
+
+        <div class="why-plug-points">
+
+            <div class="why-point">
+                <span class="why-point-number">01</span>
+                <div>
+                    <h3>Discover</h3>
+                    <p>Explore different categories in one marketplace.</p>
+                </div>
+            </div>
+
+            <div class="why-point">
+                <span class="why-point-number">02</span>
+                <div>
+                    <h3>Connect</h3>
+                    <p>Find the people offering what you need.</p>
+                </div>
+            </div>
+
+            <div class="why-point">
+                <span class="why-point-number">03</span>
+                <div>
+                    <h3>Get it done</h3>
+                    <p>Move from searching to making connections.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= POPULAR LOCATIONS ================= -->
+
+<section class="container locations" id="locations">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="section-eyebrow">EXPLORE BY LOCATION</span>
+
+            <h2>Popular property locations</h2>
+
+            <p>
+                Start your property search in popular areas.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="location-list">
+        <span>Kahawa Wendani</span>
+        <span>Kahawa Sukari</span>
+        <span>Ruiru</span>
+        <span>Juja</span>
+        <span>Kasarani</span>
+        <span>Thika</span>
+        <span>Roysambu</span>
+        <span>Nairobi CBD</span>
+    </div>
+
+</section>
+
+
+<!-- ================= GROW WITH THE PLUG ================= -->
+
+<section class="grow-section" id="grow">
+
+    <div class="container">
+
+        <div class="grow-heading">
+
+            <span class="section-eyebrow">YOUR OPPORTUNITY STARTS HERE</span>
+
+            <h2>Grow with THE PLUG.</h2>
+
+            <p>
+                Have something to offer? Put it in front of people
+                looking for exactly what you provide.
+            </p>
+
+        </div>
+
+
+        <div class="grow-grid">
+
+            <article class="grow-card grow-seller">
+
+                <div class="grow-card-top">
+                    <span class="grow-number">01 / SELLERS</span>
+                    <span class="grow-icon">↗</span>
+                </div>
+
+                <div>
+                    <h3>Have something to sell?</h3>
+                    <p>
+                        Showcase new or pre-owned products and
+                        connect with potential buyers.
+                    </p>
+                    <a href="landlord.html">
+                        Start selling <span>→</span>
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="grow-card grow-provider">
+
+                <div class="grow-card-top">
+                    <span class="grow-number">02 / SERVICE PROVIDERS</span>
+                    <span class="grow-icon">↗</span>
+                </div>
+
+                <div>
+                    <h3>Turn your skills into opportunities.</h3>
+                    <p>
+                        Let customers discover your services,
+                        skills and professional work.
+                    </p>
+                    <a href="landlord.html">
+                        Join as a provider <span>→</span>
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="grow-card grow-owner">
+
+                <div class="grow-card-top">
+                    <span class="grow-number">03 / PROPERTY OWNERS</span>
+                    <span class="grow-icon">↗</span>
+                </div>
+
+                <div>
+                    <h3>Have a property to list?</h3>
+                    <p>
+                        Reach people searching for houses,
+                        apartments and commercial spaces.
+                    </p>
+                    <a href="landlord.html">
+                        List your property <span>→</span>
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="grow-card grow-tasker">
+
+                <div class="grow-card-top">
+                    <span class="grow-number">04 / TASKERS & HIRE</span>
+                    <span class="grow-icon">↗</span>
+                </div>
+
+                <div>
+                    <h3>Ready to offer a helping hand?</h3>
+                    <p>
+                        Connect with people who need help,
+                        equipment or everyday solutions.
+                    </p>
+                    <a href="landlord.html">
+                        Get started <span>→</span>
+                    </a>
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+
+<section class="contact-section" id="contact">
+
+    <div class="container contact-container">
+
+        <div>
+            <span class="section-eyebrow">LET'S CONNECT</span>
+
+            <h2>Need to get in touch?</h2>
+
+            <p>
+                Have a question, an idea or an opportunity?
+                We'd love to hear from you.
+            </p>
+        </div>
+
+
+        <div class="contact-details">
+
+            <a href="tel:+254758871230">
+                <span>PHONE</span>
+                +254 758 871 230
+            </a>
+
+            <a href="https://wa.me/254758871230" target="_blank" rel="noopener noreferrer">
+                <span>WHATSAPP</span>
+                Chat with us
+            </a>
+
+            <a href="mailto:muthurievs77@gmail.com">
+                <span>EMAIL</span>
+                muthurievs77@gmail.com
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="main-footer">
+
+    <div class="footer-main">
+
+        <div class="footer-brand">
+
+            <a href="#home" class="footer-logo">
+                THE <span>PLUG.</span>
+            </a>
+
+            <p>
+                Your marketplace for finding, connecting
+                and getting things done.
+            </p>
+
+            <strong>Find It. Connect. Get It Done.</strong>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>Explore</h3>
+            <a href="#categories">Categories</a>
+            <a href="#marketplace">Marketplace</a>
+            <a href="#properties">Properties</a>
+            <a href="#favourites">Favourites</a>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>Get involved</h3>
+            <a href="landlord.html">List with us</a>
+            <a href="#grow">Become a partner</a>
+            <a href="#contact">Contact us</a>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>Contact</h3>
+            <a href="tel:+254758871230">+254 758 871 230</a>
+            <a href="mailto:muthurievs77@gmail.com">Email us</a>
+            <a href="https://wa.me/254758871230" target="_blank" rel="noopener noreferrer">
+                WhatsApp
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © <span id="current-year">2026</span> THE PLUG.
+            All rights reserved.
         </p>
 
-        <p class="copyright">
-            © 2026 Prime Spaces. All rights reserved.
-        </p>
+        <p>Find It. Connect. Get It Done.</p>
 
-    </footer>
+    </div>
+
+</footer>
 
 
-    <!-- SUPABASE LIBRARY -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- ================= SCRIPTS ================= -->
 
-    <!-- MAIN APPLICATION -->
-    <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuButton = document.getElementById("menu-toggle");
+    const navigation = document.getElementById("main-nav");
+
+    if (menuButton && navigation) {
+
+        menuButton.addEventListener("click", function () {
+
+            const isOpen = navigation.classList.toggle("menu-open");
+
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+            menuButton.textContent = isOpen ? "×" : "☰";
+
+        });
+
+        navigation.querySelectorAll("a").forEach(function (link) {
+
+            link.addEventListener("click", function () {
+                navigation.classList.remove("menu-open");
+                menuButton.setAttribute("aria-expanded", "false");
+                menuButton.textContent = "☰";
+            });
+
+        });
+
+    }
+
+
+    const year = document.getElementById("current-year");
+
+    if (year) {
+        year.textContent = new Date().getFullYear();
+    }
+
+});
+</script>
 
 </body>
 </html>
