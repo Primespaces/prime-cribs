@@ -1,15 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Explore Marketplace | THE PLUG</title>
+<meta name="description" content="Find products, properties, services, equipment and taskers on THE PLUG.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+    --navy: #172554;
+    --navy-light: #263e6b;
+    --orange: #FF7139;
+    --amber: #FFC66B;
+    --ivory: #F7F5EF;
+    --white: #ffffff;
+    --muted: #aab5ca;
+    --border: rgba(255,255,255,.12);
+    --background: #0e1935;
+    --card: #172747;
+    --shadow: 0 12px 35px rgba(0,0,0,.18);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--background);
+    color: var(--ivory);
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.container {
+    width: min(1150px, 92%);
+    margin: auto;
+}
+
+/* HEADER */
+
+header {
+    background: var(--navy);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar {
+    min-height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    font-family: Manrope, sans-serif;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--orange);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+nav a {
+    color: var(--ivory);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+nav a:hover,
+nav a.active {
+    color: var(--amber);
+}
+
+.nav-cta {
+    background: var(--orange);
+    color: white !important;
+    padding: 10px 17px;
+    border-radius: 8px;
+}
+
+.menu-toggle {
+    display: none;
+    background: transparent;
+    color: white;
+    border: 0;
+    font-size: 27px;
+}
+
+/* HERO */
+
+.hero {
+    padding: 75px 0 55px;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(255,113,57,.17), transparent 30%),
+        linear-gradient(135deg, #172554, #101d3d);
+    text-align: center;
+}
+
+.hero-label {
+    color: var(--amber);
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.hero h1 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(32px, 5vw, 53px);
+    line-height: 1.15;
+    max-width: 780px;
+    margin: auto;
+    letter-spacing: -1.5px;
+}
+
+.hero h1 span {
+    color: var(--orange);
+}
+
+.hero-description {
+    color: var(--muted);
+    max-width: 620px;
+    margin: 18px auto 28px;
+    font-size: 15px;
+}
+
+.search-box {
+    max-width: 690px;
+    margin: auto;
+    background: white;
+    border-radius: 12px;
+    padding: 7px;
+    display: flex;
+    gap: 8px;
+    box-shadow: var(--shadow);
+}
+
+.search-box input {
+    min-width: 0;
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 13px;
+    color: #172554;
+    background: transparent;
+}
+
+.search-box button {
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 0 24px;
+    border-radius: 8px;
+    font-weight: 800;
+}
+
+.tagline {
+    color: var(--amber);
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* CATEGORIES */
+
+.categories-section {
+    padding: 55px 0 35px;
+}
+
+.section-heading {
+    margin-bottom: 25px;
+}
+
+.section-heading h2 {
+    font-family: Manrope, sans-serif;
+    font-size: 25px;
+}
+
+.section-heading p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.market-category {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 23px 12px;
+    color: var(--ivory);
+    text-align: center;
+    transition: .2s ease;
+}
+
+.market-category:hover,
+.market-category.active {
+    border-color: var(--orange);
+    background: #24365c;
+    transform: translateY(-3px);
+}
+
+.category-icon {
+    font-size: 29px;
+    margin-bottom: 10px;
+}
+
+.market-category h3 {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.market-category p {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* RESULTS */
+
+.results-section {
+    padding: 45px 0 75px;
+    scroll-margin-top: 90px;
+}
+
+.results-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.results-heading h2 {
+    font-family: Manrope, sans-serif;
+    font-size: 25px;
+}
+
+.results-heading p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.filters select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--ivory);
+    padding: 11px 13px;
+    border-radius: 8px;
+    min-width: 170px;
+    outline: none;
+}
+
+.market-listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+    gap: 20px;
+}
+
+.listing-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    transition: .2s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.listing-image {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    display: block;
+    background: var(--navy-light);
+}
+
+.image-placeholder {
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: var(--amber);
+}
+
+.listing-content {
+    padding: 17px;
+}
+
+.listing-category {
+    color: var(--amber);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.listing-content h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 17px;
+    margin: 8px 0;
+    overflow-wrap: anywhere;
+}
+
+.listing-location {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.listing-price {
+    color: var(--orange);
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.listing-description {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.contact-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 13px;
+    background: var(--orange);
+    color: white;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.market-empty {
+    text-align: center;
+    background: var(--card);
+    border: 1px dashed var(--border);
+    padding: 45px 20px;
+    border-radius: 13px;
+    grid-column: 1 / -1;
+}
+
+.market-empty-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.market-empty h3 {
+    margin-bottom: 7px;
+}
+
+.market-empty p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* JOIN SECTION */
+
+.join-section {
+    padding: 50px 20px;
+    background: var(--navy);
+    text-align: center;
+    border-top: 1px solid var(--border);
+}
+
+.join-section h2 {
+    font-family: Manrope, sans-serif;
+    font-size: 26px;
+}
+
+.join-section p {
+    color: var(--muted);
+    margin: 10px auto 20px;
+    font-size: 14px;
+}
+
+.join-button {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-weight: 800;
+}
+
+/* FOOTER */
+
+footer {
+    background: #0a142d;
+    padding: 27px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+footer a {
+    color: var(--amber);
+    margin: 0 7px;
+}
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    nav {
+        display: none;
+        position: absolute;
+        top: 75px;
+        left: 0;
+        width: 100%;
+        padding: 22px;
+        background: var(--navy);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+        border-top: 1px solid var(--border);
+    }
+
+    nav.menu-open {
+        display: flex;
+    }
+
+    nav a {
+        padding: 5px;
+    }
+
+    .hero {
+        padding: 55px 0 45px;
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .market-category:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .results-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .filters select {
+        width: 100%;
+    }
+
+    .search-box {
+        flex-direction: column;
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .search-box input {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .search-box button {
+        padding: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="container navbar">
+        <a href="index.html" class="logo">THE <span>PLUG.</span></a>
+
+        <button class="menu-toggle" id="menu-toggle"
+            aria-label="Toggle navigation" aria-expanded="false">☰</button>
+
+        <nav id="main-nav">
+            <a href="index.html">Home</a>
+            <a href="marketplace.html" class="active">Explore</a>
+            <a href="index.html#properties">Properties</a>
+            <a href="landlord.html">List a Property</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-label">Welcome to THE PLUG</div>
+
+            <h1>Everything you need.<br><span>All in one place.</span></h1>
+
+            <p class="hero-description">
+                Discover properties, shop for products, find service providers,
+                hire equipment and connect with reliable taskers.
+            </p>
+
+            <div class="search-box">
+                <input
+                    type="search"
+                    id="market-search"
+                    placeholder="What are you looking for today?"
+                    aria-label="Search marketplace">
+
+                <button id="market-search-btn">Search</button>
+            </div>
+
+            <p class="tagline">Find It. Connect. Get It Done.</p>
+        </div>
+    </section>
+
+    <section class="categories-section">
+        <div class="container">
+
+            <div class="section-heading">
+                <h2>Explore our marketplace</h2>
+                <p>Choose what you are looking for.</p>
+            </div>
+
+            <div class="category-grid">
+
+                <button class="market-category active" data-category="property" aria-pressed="true">
+                    <div class="category-icon">🏠</div>
+                    <h3>Property</h3>
+                    <p>Find a place to live or invest</p>
+                </button>
+
+                <button class="market-category" data-category="buy-sell" aria-pressed="false">
+                    <div class="category-icon">🛍️</div>
+                    <h3>Buy & Sell</h3>
+                    <p>Discover products and deals</p>
+                </button>
+
+                <button class="market-category" data-category="services" aria-pressed="false">
+                    <div class="category-icon">🧰</div>
+                    <h3>Services</h3>
+                    <p>Find skilled professionals</p>
+                </button>
+
+                <button class="market-category" data-category="hire" aria-pressed="false">
+                    <div class="category-icon">🔧</div>
+                    <h3>Hire</h3>
+                    <p>Find items and equipment</p>
+                </button>
+
+                <button class="market-category" data-category="taskers" aria-pressed="false">
+                    <div class="category-icon">🤝</div>
+                    <h3>Taskers</h3>
+                    <p>Get everyday tasks done</p>
+                </button>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="results-section" id="market-results-section">
+        <div class="container">
+
+            <div class="results-heading">
+                <div>
+                    <h2 id="market-results-title">Explore Properties</h2>
+                    <p id="market-results-subtitle">
+                        Discover houses, apartments, land and commercial spaces.
+                    </p>
+                </div>
+            </div>
+
+            <div class="filters">
+                <select id="market-location" aria-label="Filter by location">
+                    <option value="">All locations</option>
+                    <option value="Nairobi">Nairobi</option>
+                    <option value="Kiambu">Kiambu</option>
+                    <option value="Ruiru">Ruiru</option>
+                    <option value="Kahawa">Kahawa</option>
+                    <option value="Thika">Thika</option>
+                    <option value="Meru">Meru</option>
+                    <option value="other">Other locations</option>
+                </select>
+
+                <select id="market-subcategory" aria-label="Filter by category">
+                    <option value="">All categories</option>
+                </select>
+            </div>
+
+            <div id="market-results">
+                <div class="market-empty">
+                    <div class="market-empty-icon">⌕</div>
+                    <h3>Loading THE PLUG...</h3>
+                    <p>Connecting to available listings.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="join-section">
+        <div class="container">
+            <h2>Have something to offer?</h2>
+            <p>Connect with customers and grow your business through THE PLUG.</p>
+            <a href="index.html#properties" class="join-button">Get Started</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <p><strong>THE PLUG.</strong> — Find It. Connect. Get It Done.</p>
+        <p style="margin-top:9px;">
+            <a href="index.html">Home</a>
+            <a href="marketplace.html">Explore</a>
+            <a href="landlord.html">Landlords</a>
+        </p>
+        <p style="margin-top:9px;">© <span id="market-year"></span> THE PLUG. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
 document.addEventListener("DOMContentLoaded", async function () {
 
-    // =========================================
     // 1. SUPABASE CONNECTION
-    // =========================================
 
     const SUPABASE_URL = "https://djncwfwrjdvpcjwwzsui.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_4MqW4L4i0YSmEu5AsytG7A_LwK0RPGi";
 
+    const resultsContainer = document.getElementById("market-results");
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, function (char) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            }[char];
+        });
+    }
+
+    function emptyState(title, message) {
+        return `
+            <div class="market-empty">
+                <div class="market-empty-icon">⌕</div>
+                <h3>${escapeHTML(title)}</h3>
+                <p>${escapeHTML(message)}</p>
+            </div>
+        `;
+    }
+
     if (!window.supabase) {
-        document.getElementById("market-results").innerHTML =
-            emptyState("Connection unavailable", "Please refresh the page and try again.");
+        resultsContainer.innerHTML = emptyState(
+            "Connection unavailable",
+            "The Supabase library could not load. Check your internet connection and refresh."
+        );
         return;
     }
 
@@ -18,18 +725,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         SUPABASE_ANON_KEY
     );
 
-    // =========================================
-    // 2. PAGE ELEMENTS AND STATE
-    // =========================================
+    // 2. PAGE ELEMENTS
 
     const menuToggle = document.getElementById("menu-toggle");
     const mainNav = document.getElementById("main-nav");
-
     const categoryCards = document.querySelectorAll(".market-category");
 
     const resultsTitle = document.getElementById("market-results-title");
     const resultsSubtitle = document.getElementById("market-results-subtitle");
-    const resultsContainer = document.getElementById("market-results");
     const resultsSection = document.getElementById("market-results-section");
 
     const searchInput = document.getElementById("market-search");
@@ -50,25 +753,21 @@ document.addEventListener("DOMContentLoaded", async function () {
             subtitle: "Discover houses, apartments, land and commercial spaces.",
             options: ["Houses", "Apartments", "Bedsitters", "Single Rooms", "Land", "Commercial Spaces"]
         },
-
         "buy-sell": {
             title: "Buy & Sell Products",
             subtitle: "Discover products, deals and things worth owning.",
             options: ["Electronics", "Phones", "Fashion", "Home & Living", "Furniture", "Other Products"]
         },
-
         services: {
             title: "Professional Services",
             subtitle: "Connect with businesses and skilled service providers.",
             options: ["Beauty & Personal Care", "Repairs", "Cleaning", "Design", "Professional Services", "Other Services"]
         },
-
         hire: {
             title: "Items Available for Hire",
             subtitle: "Find equipment, tools and useful items to hire.",
             options: ["Tools", "Construction Equipment", "Electronics", "Event Equipment", "Vehicles", "Other Items"]
         },
-
         taskers: {
             title: "Find Taskers",
             subtitle: "Connect with people ready to help with everyday tasks.",
@@ -76,9 +775,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     };
 
-    // =========================================
-    // 3. HELPER FUNCTIONS
-    // =========================================
+    // 3. HELPERS
 
     function normalize(value) {
         return String(value || "")
@@ -86,42 +783,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             .replace(/[_-]/g, " ")
             .replace(/\s+/g, " ")
             .trim();
-    }
-
-    function escapeHTML(value) {
-        return String(value ?? "").replace(/[&<>"']/g, function (char) {
-            return {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#39;"
-            }[char];
-        });
-    }
-
-    function formatPrice(listing) {
-        if (listing.price_text) {
-            return escapeHTML(listing.price_text);
-        }
-
-        const price = Number(listing.price);
-
-        if (Number.isFinite(price) && price > 0) {
-            return "KSh " + price.toLocaleString("en-KE");
-        }
-
-        return "Contact for price";
-    }
-
-    function emptyState(title, message) {
-        return `
-            <div class="market-empty">
-                <div class="market-empty-icon">⌕</div>
-                <h3>${escapeHTML(title)}</h3>
-                <p>${escapeHTML(message)}</p>
-            </div>
-        `;
     }
 
     function categoryMatches(value, category) {
@@ -135,7 +796,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             taskers: ["taskers", "tasker", "tasks", "task"]
         };
 
-        return aliases[category].includes(saved);
+        return (aliases[category] || []).includes(saved);
     }
 
     function getListingSearchText(listing) {
@@ -150,17 +811,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         ].join(" "));
     }
 
-    // =========================================
     // 4. LOAD MARKETPLACE LISTINGS
-    // =========================================
 
     async function loadMarketplaceListings() {
-
-        resultsContainer.innerHTML = emptyState(
-            "Loading marketplace...",
-            "Please wait while we retrieve available listings."
-        );
-
         try {
             const { data, error } = await db
                 .from("marketplace_listings")
@@ -170,35 +823,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (error) throw error;
 
             marketplaceListings = (data || []).map(function (item) {
-                return {
-                    ...item,
-                    source: "marketplace"
-                };
+                return { ...item, source: "marketplace" };
             });
 
-            console.log(
-                "THE PLUG marketplace listings loaded:",
-                marketplaceListings.length
-            );
+            console.log("Marketplace listings loaded:", marketplaceListings.length);
 
         } catch (error) {
             console.error("Marketplace loading error:", error);
-
             marketplaceListings = [];
-
-            resultsContainer.innerHTML = emptyState(
-                "Unable to load marketplace listings",
-                error.message || "Please check your connection and try again."
-            );
         }
     }
 
-    // =========================================
     // 5. LOAD EXISTING APPROVED PROPERTIES
-    // =========================================
 
     async function loadProperties() {
-
         try {
             const { data, error } = await db
                 .from("properties")
@@ -209,16 +847,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (error) throw error;
 
             propertyListings = (data || []).map(function (item) {
-                return {
-                    ...item,
-                    source: "property"
-                };
+                return { ...item, source: "property" };
             });
 
-            console.log(
-                "THE PLUG approved properties loaded:",
-                propertyListings.length
-            );
+            console.log("Approved properties loaded:", propertyListings.length);
 
         } catch (error) {
             console.error("Property loading error:", error);
@@ -226,47 +858,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // =========================================
-    // 6. COMBINE LISTINGS
-    // =========================================
-
-    function getAllListings() {
-        return [
-            ...marketplaceListings,
-            ...propertyListings
-        ];
-    }
-
-    function getCategoryListings(category) {
-
-        if (category === "property") {
-            return allListings.filter(function (item) {
-                return item.source === "property" ||
-                    categoryMatches(item.category, "property");
-            });
-        }
-
-        return marketplaceListings.filter(function (item) {
-            return categoryMatches(item.category, category);
-        });
-    }
-
-    // =========================================
-    // 7. PROPERTY PHOTO SUPPORT
-    // =========================================
+    // 6. PHOTOS
 
     function getPhoto(item) {
-
         if (item.photo_url) {
             if (/^https?:\/\//i.test(item.photo_url)) {
                 return item.photo_url;
             }
 
-            const path = item.photo_url.replace(/^\/+/, "");
-
             return db.storage
                 .from("property-photos")
-                .getPublicUrl(path).data.publicUrl;
+                .getPublicUrl(String(item.photo_url).replace(/^\/+/, ""))
+                .data.publicUrl;
         }
 
         if (Array.isArray(item.photo_urls) && item.photo_urls.length) {
@@ -283,84 +886,46 @@ document.addEventListener("DOMContentLoaded", async function () {
         return "";
     }
 
-    // =========================================
-    // 8. DISPLAY LISTING CARDS
-    // =========================================
+    // 7. PRICES AND CONTACT
 
-    function renderListings() {
+    function formatPrice(item) {
+        if (item.price_text) return escapeHTML(item.price_text);
 
-        let listings = getCategoryListings(selectedCategory);
+        const price = Number(item.price);
 
-        const location = normalize(locationFilter.value);
-        const subcategory = normalize(subcategoryFilter.value);
-        const query = normalize(searchTerm);
-
-        listings = listings.filter(function (item) {
-
-            const text = getListingSearchText(item);
-
-            const matchesSearch =
-                !query || text.includes(query);
-
-            const matchesLocation =
-                !location ||
-                (location === "other"
-                    ? !["nairobi", "kiambu", "ruiru", "kahawa", "thika", "meru"]
-                        .some(place => normalize(item.location).includes(place))
-                    : normalize(item.location).includes(location));
-
-            const matchesSubcategory =
-                !subcategory || text.includes(subcategory);
-
-            return matchesSearch && matchesLocation && matchesSubcategory;
-        });
-
-        if (listings.length === 0) {
-
-            resultsContainer.innerHTML = emptyState(
-                "No listings found",
-                "There are currently no matching listings. Try changing your search or filters."
-            );
-
-            return;
+        if (Number.isFinite(price) && price > 0) {
+            return "KSh " + price.toLocaleString("en-KE");
         }
 
-        resultsContainer.innerHTML = `
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                margin-bottom:20px;
-                color:var(--muted);
-                font-size:13px;
-            ">
-                <span>${listings.length} listing(s) found</span>
-            </div>
-
-            <div class="market-listing-grid" style="
-                display:grid;
-                grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-                gap:20px;
-            ">
-                ${listings.map(renderListingCard).join("")}
-            </div>
-        `;
+        return "Contact for price";
     }
 
-    function renderListingCard(item) {
+    function formatWhatsApp(number) {
+        let digits = String(number || "").replace(/\D/g, "");
 
+        if (digits.startsWith("0") && digits.length === 10) {
+            digits = "254" + digits.substring(1);
+        } else if (
+            (digits.startsWith("7") || digits.startsWith("1")) &&
+            digits.length === 9
+        ) {
+            digits = "254" + digits;
+        }
+
+        return digits;
+    }
+
+    // 8. LISTING CARDS
+
+    function renderListingCard(item) {
         const title = escapeHTML(item.title || "Untitled listing");
         const description = escapeHTML(
             item.description || "Contact the listing owner for more information."
         );
-
-        const location = escapeHTML(
-            item.location || "Location not specified"
-        );
-
-        const photo = getPhoto(item);
+        const location = escapeHTML(item.location || "Location not specified");
 
         const isProperty = item.source === "property";
+        const photo = isProperty ? getPhoto(item) : "";
 
         let price;
 
@@ -380,115 +945,106 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         const imageHTML = photo
-            ? `
-                <img
-                    src="${escapeHTML(photo)}"
-                    alt="${title}"
-                    loading="lazy"
-                    style="width:100%;height:190px;object-fit:cover;"
-                    onerror="this.style.display='none';"
-                >
-            `
-            : `
-                <div style="
-                    height:190px;
-                    background:linear-gradient(135deg,#172554,#263e6b);
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:#FFC66B;
-                    font-size:45px;
-                ">${isProperty ? "🏠" : "🛍️"}</div>
-            `;
+            ? `<img class="listing-image" src="${escapeHTML(photo)}"
+                    alt="${title}" loading="lazy"
+                    onerror="this.style.display='none';">`
+            : `<div class="image-placeholder">${isProperty ? "🏠" : "🛍️"}</div>`;
+
+        let contactHTML = "";
+
+        if (isProperty && item.whatsapp_number) {
+            const number = formatWhatsApp(item.whatsapp_number);
+
+            if (number) {
+                contactHTML = `
+                    <a class="contact-link"
+                       href="https://wa.me/${escapeHTML(number)}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                       Contact on WhatsApp →
+                    </a>
+                `;
+            }
+        }
 
         return `
-            <article style="
-                overflow:hidden;
-                border:1px solid var(--border);
-                border-radius:14px;
-                background:var(--navy-card);
-                color:var(--ivory);
-            ">
+            <article class="listing-card">
                 ${imageHTML}
-
-                <div style="padding:17px;">
-
-                    <span style="
-                        color:var(--amber);
-                        font-size:10px;
-                        font-weight:800;
-                        text-transform:uppercase;
-                    ">
+                <div class="listing-content">
+                    <span class="listing-category">
                         ${isProperty ? "PROPERTY" : escapeHTML(item.category || "MARKETPLACE")}
                     </span>
 
-                    <h3 style="
-                        font-family:Manrope,sans-serif;
-                        font-size:17px;
-                        margin:9px 0;
-                    ">${title}</h3>
-
-                    <p style="
-                        color:var(--muted);
-                        font-size:12px;
-                        margin-bottom:10px;
-                    ">📍 ${location}</p>
-
-                    <p style="
-                        color:var(--orange);
-                        font-weight:800;
-                        font-size:16px;
-                        margin-bottom:12px;
-                    ">${price}</p>
-
-                    <p style="
-                        color:var(--muted);
-                        font-size:12px;
-                        line-height:1.7;
-                        overflow-wrap:anywhere;
-                    ">${description}</p>
-
-                    ${
-                        item.whatsapp_number
-                            ? `
-                                <a href="https://wa.me/${escapeHTML(
-                                    formatWhatsApp(item.whatsapp_number)
-                                )}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="market-action-link">
-                                    Contact on WhatsApp →
-                                </a>
-                            `
-                            : ""
-                    }
-
+                    <h3>${title}</h3>
+                    <p class="listing-location">📍 ${location}</p>
+                    <p class="listing-price">${price}</p>
+                    <p class="listing-description">${description}</p>
+                    ${contactHTML}
                 </div>
             </article>
         `;
     }
 
-    function formatWhatsApp(number) {
-        let digits = String(number || "").replace(/\D/g, "");
+    // 9. FILTER AND DISPLAY
 
-        if (digits.startsWith("0") && digits.length === 10) {
-            digits = "254" + digits.substring(1);
-        } else if (
-            (digits.startsWith("7") || digits.startsWith("1")) &&
-            digits.length === 9
-        ) {
-            digits = "254" + digits;
+    function getCategoryListings(category) {
+        if (category === "property") {
+            return allListings.filter(function (item) {
+                return item.source === "property" ||
+                    categoryMatches(item.category, "property");
+            });
         }
 
-        return digits;
+        return marketplaceListings.filter(function (item) {
+            return categoryMatches(item.category, category);
+        });
     }
 
-    // =========================================
-    // 9. CATEGORY SELECTION
-    // =========================================
+    function renderListings() {
+        let listings = getCategoryListings(selectedCategory);
+
+        const location = normalize(locationFilter.value);
+        const subcategory = normalize(subcategoryFilter.value);
+        const query = normalize(searchTerm);
+
+        listings = listings.filter(function (item) {
+            const text = getListingSearchText(item);
+
+            const matchesSearch = !query || text.includes(query);
+
+            const matchesLocation = !location ||
+                (location === "other"
+                    ? !["nairobi", "kiambu", "ruiru", "kahawa", "thika", "meru"]
+                        .some(place => normalize(item.location).includes(place))
+                    : normalize(item.location).includes(location));
+
+            const matchesSubcategory = !subcategory || text.includes(subcategory);
+
+            return matchesSearch && matchesLocation && matchesSubcategory;
+        });
+
+        if (listings.length === 0) {
+            resultsContainer.innerHTML = emptyState(
+                "No listings found",
+                "There are currently no matching listings. Try another category or change your filters."
+            );
+            return;
+        }
+
+        resultsContainer.innerHTML = `
+            <p style="color:var(--muted);font-size:13px;margin-bottom:17px;">
+                ${listings.length} listing(s) found
+            </p>
+
+            <div class="market-listing-grid">
+                ${listings.map(renderListingCard).join("")}
+            </div>
+        `;
+    }
+
+    // 10. CATEGORY SELECTION
 
     function displayCategory(category, shouldScroll = true) {
-
         if (!categories[category]) return;
 
         selectedCategory = category;
@@ -505,15 +1061,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         resultsTitle.textContent = categories[category].title;
         resultsSubtitle.textContent = categories[category].subtitle;
 
-        subcategoryFilter.innerHTML =
-            '<option value="">All categories</option>';
+        subcategoryFilter.innerHTML = '<option value="">All categories</option>';
 
         categories[category].options.forEach(function (option) {
             const element = document.createElement("option");
-
             element.value = option.toLowerCase();
             element.textContent = option;
-
             subcategoryFilter.appendChild(element);
         });
 
@@ -533,9 +1086,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    // =========================================
-    // 10. SEARCH
-    // =========================================
+    // 11. SEARCH
 
     const keywords = {
         property: ["house", "houses", "apartment", "rent", "land", "property", "bedsitter"],
@@ -546,9 +1097,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     };
 
     function searchMarketplace() {
-
         const query = searchInput.value.trim();
-
         searchTerm = query;
 
         if (query) {
@@ -565,7 +1114,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             categoryCards.forEach(function (card) {
                 const active = card.dataset.category === selectedCategory;
-
                 card.classList.toggle("active", active);
                 card.setAttribute("aria-pressed", String(active));
             });
@@ -588,26 +1136,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     searchButton.addEventListener("click", searchMarketplace);
 
     searchInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            searchMarketplace();
-        }
+        if (event.key === "Enter") searchMarketplace();
     });
 
-    // =========================================
-    // 11. FILTERS
-    // =========================================
+    // 12. FILTERS
 
     locationFilter.addEventListener("change", renderListings);
     subcategoryFilter.addEventListener("change", renderListings);
 
-    // =========================================
-    // 12. MOBILE NAVIGATION
-    // =========================================
+    // 13. MOBILE MENU
 
     if (menuToggle && mainNav) {
-
         menuToggle.addEventListener("click", function () {
-
             const open = mainNav.classList.toggle("menu-open");
 
             menuToggle.setAttribute("aria-expanded", String(open));
@@ -615,7 +1155,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
 
         mainNav.querySelectorAll("a").forEach(function (link) {
-
             link.addEventListener("click", function () {
                 mainNav.classList.remove("menu-open");
                 menuToggle.setAttribute("aria-expanded", "false");
@@ -624,9 +1163,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // =========================================
-    // 13. INITIALIZE
-    // =========================================
+    // 14. INITIALIZE
 
     document.getElementById("market-year").textContent =
         new Date().getFullYear();
@@ -641,12 +1178,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         loadProperties()
     ]);
 
-    allListings = getAllListings();
+    allListings = [
+        ...marketplaceListings,
+        ...propertyListings
+    ];
 
     console.log("THE PLUG marketplace ready.");
-    console.log("Total marketplace records:", marketplaceListings.length);
-    console.log("Total approved property records:", propertyListings.length);
+    console.log("Marketplace records:", marketplaceListings.length);
+    console.log("Approved property records:", propertyListings.length);
 
     displayCategory("property", false);
-
 });
+</script>
+
+</body>
+</html>
